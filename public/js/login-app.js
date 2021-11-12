@@ -44,7 +44,7 @@ button.addEventListener('click', function (e) {
           location.href="/home";
         }
         else{
-          location.href="/ClassList";
+          location.href="/FacultyTimeTable";
         }
       }
       else {

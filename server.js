@@ -7,19 +7,9 @@ var bodyParser = require("body-parser");
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
-
 app.set("view engine", "ejs");
-
-const crypto = require("crypto");
-const path = require("path");
-const mongoose = require("mongoose");
-const https = require('https')
-const multer = require("multer");
-const { GridFsStorage } = require("multer-gridfs-storage");
-const { RSA_NO_PADDING } = require("constants");
 var axios = require('axios');
 const MongoClient = require("mongodb").MongoClient;
-const mongodb = require("mongodb");
 
 // DB
 const mongoURI = "mongodb://ThaparUser:Pass123@cluster0-shard-00-00.jsaod.mongodb.net:27017,cluster0-shard-00-01.jsaod.mongodb.net:27017,cluster0-shard-00-02.jsaod.mongodb.net:27017/TechAcademy?ssl=true&replicaSet=atlas-1u2syf-shard-0&authSource=admin&retryWrites=true&w=majority";
@@ -32,146 +22,6 @@ MongoClient.connect(url, (err, database) => {
   }
   db = database;
 });
-
-// connection
-const conn = mongoose.createConnection(mongoURI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-});
-
-// init gfs
-let gfs;
-conn.once("open", () => {
-  // init stream
-  gfs = new mongoose.mongo.GridFSBucket(conn.db, {
-    bucketName: "uploads"
-  });
-});
-
-// Storage
-const storage = new GridFsStorage({
-  url: mongoURI,
-  file: (req, file) => {
-    return new Promise((resolve, reject) => {
-      crypto.randomBytes(16, (err, buf) => {
-        if (err) {
-          return reject(err);
-        }
-        const filename = buf.toString("hex") + path.extname(file.originalname);
-        const fileInfo = {
-          filename: filename,
-          bucketName: "uploads"
-        };
-        resolve(fileInfo);
-      });
-    });
-  }
-});
-
-const upload = multer({
-  storage
-});
-
-// get / page
-app.get("/writtenexam", (req, res) => {
-  if (!gfs) {
-    console.log("some error occured, check connection to db");
-    res.send("some error occured, check connection to db");
-    process.exit(0);
-  }
-  gfs.find().toArray((err, files) => {
-    // check if files
-    if (!files || files.length === 0) {
-      return res.render("WrittenExams", {
-        files: false
-      });
-    } else {
-      const f = files
-        .map(file => {
-          if (
-            file.contentType === "image/png" ||
-            file.contentType === "image/jpeg"
-          ) {
-            file.isImage = true;
-          } else {
-            file.isImage = false;
-          }
-          return file;
-        })
-        .sort((a, b) => {
-          return (
-            new Date(b["uploadDate"]).getTime() -
-            new Date(a["uploadDate"]).getTime()
-          );
-        });
-
-      return res.render("WrittenExam", {
-        files: f
-      });
-    }
-
-    // return res.json(files);
-  });
-});
-
-app.post("/upload", upload.single("file"), (req, res) => {
-  res.redirect("/writtenexam");
-});
-
-app.get("/files", (req, res) => {
-  gfs.find().toArray((err, files) => {
-    // check if files
-    if (!files || files.length === 0) {
-      return res.status(404).json({
-        err: "no files exist"
-      });
-    }
-
-    return res.json(files);
-  });
-});
-
-app.get("/files/:filename", (req, res) => {
-  gfs.find(
-    {
-      filename: req.params.filename
-    },
-    (err, file) => {
-      if (!file) {
-        return res.status(404).json({
-          err: "no files exist"
-        });
-      }
-
-      return res.json(file);
-    }
-  );
-});
-
-app.get("/image/:filename", (req, res) => {
-  // console.log('id', req.params.id)
-  const file = gfs
-    .find({
-      filename: req.params.filename
-    })
-    .toArray((err, files) => {
-      if (!files || files.length === 0) {
-        return res.status(404).json({
-          err: "no files exist"
-        });
-      }
-      gfs.openDownloadStreamByName(req.params.filename).pipe(res);
-    });
-});
-
-// // files/del/:id
-// // Delete chunks from the db
-// app.post("/files/del/:id", (req, res) => {
-//   gfs.delete(new mongoose.Types.ObjectId(req.params.id), (err, data) => {
-//     if (err) return res.status(404).json({ err: err.message });
-//     res.redirect("/writtenexam");
-//   });
-// });
 
 app.listen((PORT), () => {
   console.log('listening on deployed server');
@@ -224,6 +74,12 @@ app.get("/adminHome", (req, res) => {
   res.sendFile(__dirname + "/adminhome.html");
 })
 
+app.get("/FacultyTimeTable", (req, res) => {
+  res.sendFile(__dirname + "/Faculty_timetable.html");
+})
+app.get("/createSchedule", (req, res) => {
+  res.sendFile(__dirname + "/createScheduleforfaculty.html");
+})
 app.post("/execute", (req, res) => {
   console.log(req.body);
   var data = JSON.stringify(req.body);
@@ -292,6 +148,7 @@ app.get('/getBatchlist', (req, res) => {
     }
   });
 });
+
 app.get('/getCourseslist', (req, res) => {
   db.collection("CourseDetails").find().toArray((err, result) => {
     if (err) {
@@ -329,7 +186,7 @@ app.post('/getCoursesforBS', (req, res) => {
     if (err) {
       res.send(err);
     } else {
-      db.collection("CourseUndertaken").find({ Semester: req.body.Semester, BranchID: result[0].BranchID }).toArray((err, result) => {
+      db.collection("CourseUndertaken").find({ Semester: req.body.Semester, BranchID: result[0].BranchID, Year: req.body.Year }).toArray((err, result) => {
         if (err) {
           res.send(err);
         } else {
@@ -340,8 +197,127 @@ app.post('/getCoursesforBS', (req, res) => {
   });
 });
 
+app.post('/getCoursesTaughtByFaculty', (req, res) => {
+  db.collection("CoursesTaughtByFaculty").find({ Year: req.body.Year, Semester: req.body.Semester, FacultyID: req.body.FacultyID }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+app.post('/getFacultyBusySlots', (req, res) => {
+  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.TeacherSem, FacultyID: req.body.FacultyID, Day: req.body.Day }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+app.post('/getFacultyAssignedSlots', (req, res) => {
+  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.TeacherSem, FacultyID: req.body.FacultyID }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+app.post('/getBatchBusySlots', (req, res) => {
+  db.collection("LectureSchedule").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, Day: req.body.Day }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
 app.post("/registerStudent", (req, res) => {
-  db.collection("Students").save(req.body, (err, result) => {
+  db.collection("Students").find({ RollNo: req.body.RollNo }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      if (result.length == 0) {
+        db.collection("Students").save(req.body, (err, result) => {
+          if (err) {
+            return console.log(err);
+          }
+          console.log("click added to db");
+          res.send([
+            {
+              message: "Request successfully logged",
+              status: true,
+            },
+          ]);
+        })
+      }
+      res.send([]);
+    }
+  });
+});
+
+
+app.post("/assignStudenttoBatch", (req, res) => {
+  db.collection("Students").find({ RollNo: req.body.RollNo }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      if (result.length == 0) {
+        db.collection("StudentBatchInfo").find({ RollNo: req.body.RollNo, Year: req.body.Year }).toArray((err, result) => {
+          if (err) {
+            res.send(err);
+          }
+          else if (result.length == 1) {
+            if (result[0].Semester % 2 != req.body.Semester) {
+              db.collection("StudentBatchInfo").save(req.body, (err, result) => {
+                if (err) {
+                  return console.log(err);
+                }
+                console.log("click added to db");
+                res.send([
+                  {
+                    message: "Request successfully logged",
+                    status: true,
+                  },
+                ]);
+              })
+            }
+            else {
+              res.send([{ message: "A batch already exists for the rollNo for the same sem in year i.e, Even Sem or Odd sem", status: false }]);
+            }
+          }
+          else if (result.length == 0) {
+            db.collection("StudentBatchInfo").save(req.body, (err, result) => {
+              if (err) {
+                return console.log(err);
+              }
+              console.log("click added to db");
+              res.send([
+                {
+                  message: "Request successfully logged",
+                  status: true,
+                },
+              ]);
+            })
+          }
+          else {
+            res.send([{ message: "The Student has been Already Assigned to 2 batches for the entered year does not exist", status: false }]);
+          }
+        });
+      }
+      else {
+        res.send([{ message: "The Roll Number does not exist", status: false }]);
+      }
+    }
+  });
+});
+
+app.post("/registerLectureSchedule", (req, res) => {
+  db.collection("LectureSchedule").save(req.body, (err, result) => {
     if (err) {
       return console.log(err);
     }
@@ -354,7 +330,6 @@ app.post("/registerStudent", (req, res) => {
     ]);
   });
 });
-
 
 app.post("/registerBatch", (req, res) => {
   db.collection("BatchDetails").find({ BatchID: req.body.BatchID, Semester: req.body.Semester }).toArray((err, result) => {
@@ -470,13 +445,13 @@ app.post("/registerFaculty", (req, res) => {
 });
 
 app.post("/AssignFaculty", (req, res) => {
-  db.collection("LectureDetails").find({FacultyID:req.body.FacultyID,BranchID: req.body.BranchID, Semester: req.body.Semester, CourseID: req.body.CourseID }).toArray((err, result) => {
+  db.collection("CoursesTaughtByFaculty").find({ FacultyID: req.body.FacultyID, Semester: req.body.Semester, CourseID: req.body.CourseID, Year: req.body.Year }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
     else {
       if (result.length == 0) {
-        db.collection("LectureDetails").save(req.body, (err, result) => {
+        db.collection("CoursesTaughtByFaculty").save(req.body, (err, result) => {
           if (err) {
             return console.log(err);
           }

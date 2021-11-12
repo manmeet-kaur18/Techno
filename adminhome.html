@@ -88,9 +88,16 @@
             <li class="nav-item">
                 <a class="nav-link collapsed" href="#af">
                     <i class="bi bi-grid"></i>
-                    <span>Assign Faculty to a Batch,Semester and Course</span>
+                    <span>Assign Course to a Faculty</span>
                 </a>
             </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/createSchedule">
+                    <i class="bi bi-grid"></i>
+                    <span>Create Schedule for the faculty</span>
+                </a>
+            </li>
+           
         </ul>
     </aside>
 
@@ -113,16 +120,8 @@
 
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title" id="rs">Register a Student</h5>
-
-                            <!-- General Form Elements -->
+                            <h5 class="card-title" id="rs">Assign a Student to a Batch</h5>
                             <div class="form">
-                                <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-2 col-form-label">Name</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="name">
-                                    </div>
-                                </div>
                                 <div class="row mb-3">
                                     <label for="inputEmail" class="col-sm-2 col-form-label">Roll Number</label>
                                     <div class="col-sm-10">
@@ -133,29 +132,30 @@
                                     <label class="col-sm-2 col-form-label">BatchID</label>
                                     <div class="col-sm-10">
                                         <select class="form-select" id="BatchID" aria-label="Default select example">
-                                            <!-- <option selected>Open this select menu</option>
-                                            <option value="1">One</option>
-                                            <option value="2">Two</option>
-                                            <option value="3">Three</option> -->
                                         </select>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">Phone</label>
+                                    <label class="col-sm-2 col-form-label">Year</label>
                                     <div class="col-sm-10">
-                                        <input type="number" class="form-control" id="phone">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">Email</label>
-                                    <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="email">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">Password</label>
-                                    <div class="col-sm-10">
-                                        <input type="number" class="form-control" id="password">
+                                        <select class="form-select" id="year1" aria-label="Default select example">
+                                            <option selected>Open this select menu</option>
+                                            <option value="2021">2021</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2019">2019</option>
+                                            <option value="2018">2018</option>
+                                            <option value="2017">2017</option>
+                                            <option value="2016">2016</option>
+                                            <option value="2015">2015</option>
+                                            <option value="2014">2014</option>
+                                            <option value="2013">2013</option>
+                                            <option value="2012">2012</option>
+                                            <option value="2011">2011</option>
+                                            <option value="2010">2010</option>
+                                            <option value="2009">2009</option>
+                                            <option value="2008">2008</option>
+                                            <option value="2007">2007</option>
+                                        </select>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
@@ -178,7 +178,7 @@
                                 </div>
 
                                 <div class="row mb-3">
-                                    <button type="submit" id="studentRegister" class="btn btn-primary">Submit</button>
+                                    <button type="submit" id="assignStudentBatch" class="btn btn-primary">Submit</button>
 
                                 </div>
                             </div><!-- End General Form Elements -->
@@ -196,12 +196,6 @@
                                         <input type="text" class="form-control" id="BatchID1">
                                     </div>
                                 </div>
-                                <!-- <div class="row mb-3">
-                                    <label for="inputEmail" class="col-sm-2 col-form-label" >Branch ID</label>
-                                    <div class="col-sm-10">
-                                        <input type="email" class="form-control" id="BranchID">
-                                    </div>
-                                </div>  -->
                                 <div class="row mb-3">
                                     <label class="col-sm-2 col-form-label">Branch ID</label>
                                     <div class="col-sm-10">
@@ -251,7 +245,7 @@
                             <h5 class="card-title" id="rc">Register a New Course</h5>
                             <div class="form">
                                 <div class="row mb-3">
-                                    <label for="inputText" class="col-sm-2 col-form-label">Branch ID</label>
+                                    <label for="inputText" class="col-sm-2 col-form-label">Course ID</label>
                                     <div class="col-sm-10">
                                         <input type="text" class="form-control" id="CourseID">
                                     </div>
@@ -274,8 +268,109 @@
                             </div><!-- End General Form Elements -->
                         </div>
                     </div>
+                    <div class="card">
+                        <div class="card-body">
+                            
+                            <h5 class="card-title" id="af">Assign Course to a Faculty</h5>
+                            <div class="form">
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Faculty ID, Name</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select" aria-label="Default select example" id="FacultyID">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Year</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select" id="year" aria-label="Default select example">
+                                            <option selected>Open this select menu</option>
+                                            <option value="2021">2021</option>
+                                            <option value="2020">2020</option>
+                                            <option value="2019">2019</option>
+                                            <option value="2018">2018</option>
+                                            <option value="2017">2017</option>
+                                            <option value="2016">2016</option>
+                                            <option value="2015">2015</option>
+                                            <option value="2014">2014</option>
+                                            <option value="2013">2013</option>
+                                            <option value="2012">2012</option>
+                                            <option value="2011">2011</option>
+                                            <option value="2010">2010</option>
+                                            <option value="2009">2009</option>
+                                            <option value="2008">2008</option>
+                                            <option value="2007">2007</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Course ID</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select" aria-label="Default select example" id="CourseID2">
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label class="col-sm-2 col-form-label">Teacher Semester(Odd-1 or Even-2)</label>
+                                    <div class="col-sm-10">
+                                        <select class="form-select" aria-label="Default select example" id="Semester3">
+                                            <option value="1">1</option>
+                                            <option value="2">2</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <button type="submit" id="AssignFacultytoCourse" class="btn btn-primary">Submit</button>
+                                </div>
+
+                            </div>
+                            <!-- General Form Elements -->
+                            <!-- End General Form Elements -->
+                        </div>
+                    </div>
                 </div>
                 <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title" id="rs">Register a Student</h5>
+                            <!-- General Form Elements -->
+                            <div class="form">
+                                <div class="row mb-3">
+                                    <label for="inputEmail" class="col-sm-2 col-form-label">Roll Number</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="rollNo1">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="inputEmail" class="col-sm-2 col-form-label">Student Name</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="Name">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="inputEmail" class="col-sm-2 col-form-label">Email</label>
+                                    <div class="col-sm-10">
+                                        <input type="email" class="form-control" id="email">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="inputEmail" class="col-sm-2 col-form-label">Phone</label>
+                                    <div class="col-sm-10">
+                                        <input type="email" class="form-control" id="phone">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <label for="inputEmail" class="col-sm-2 col-form-label">Password</label>
+                                    <div class="col-sm-10">
+                                        <input type="text" class="form-control" id="password">
+                                    </div>
+                                </div>
+                                <div class="row mb-3">
+                                    <button type="submit" id="studentRegister" class="btn btn-primary">Submit</button>
+                                </div>
+                            </div><!-- End General Form Elements -->
+                        </div>
+                    </div>
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title" id="ac">Add a New Course to a Branch and Semester</h5>
@@ -366,60 +461,7 @@
                             </div><!-- End General Form Elements -->
                         </div>
                     </div>
-
-                    <div class="card">
-                        <div class="card-body">
-                            <h5 class="card-title" id="af">Assign Faculty to a BatchID, Semester for a particular Course
-                            </h5>
-
-                            <!-- General Form Elements -->
-                            <div class="form">
-                                <div class="row mb-3">
-                                    <label class="col-sm-2 col-form-label">Faculty ID,Name</label>
-                                    <div class="col-sm-10">
-                                        <select class="form-select" aria-label="Default select example" id="FacultyID">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-2 col-form-label">Batch ID</label>
-                                    <div class="col-sm-10">
-                                        <select class="form-select" aria-label="Default select example" id="BatchID2">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-2 col-form-label">Semester</label>
-                                    <div class="col-sm-10">
-                                        <select class="form-select" aria-label="Default select example" id="Semester3">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label class="col-sm-2 col-form-label">Courses</label>
-                                    <div class="col-sm-10">
-                                        <select class="form-select" aria-label="Default select example" id="CourseID2">
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">No of Lectures</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="lectures">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <label for="inputNumber" class="col-sm-2 col-form-label">No of Practicals</label>
-                                    <div class="col-sm-10">
-                                        <input type="text" class="form-control" id="practicals">
-                                    </div>
-                                </div>
-                                <div class="row mb-3">
-                                    <button type="submit" id="AssignFacultytoBSC" class="btn btn-primary">Submit</button>
-                                </div>
-                            </div><!-- End General Form Elements -->
-                        </div>
-                    </div>
+                    
                 </div>
             </div>
         </section>
@@ -446,17 +488,17 @@
         $(document).ready(function () {
             const mySet1 = new Set()
             var parentdiv = document.getElementById('BatchID');
-            var parentdiv1 = document.getElementById('BatchID2');
+            // var parentdiv1 = document.getElementById('BatchID2');
 
             var optiondiv4 = document.createElement('option');
             optiondiv4.value = "Open this Select Menu";
             optiondiv4.textContent = "Open this Select Menu";
             parentdiv.appendChild(optiondiv4);
 
-            var optiondiv3 = document.createElement('option');
-            optiondiv3.value = "Open this Select Menu";
-            optiondiv3.textContent = "Open this Select Menu";
-            parentdiv1.appendChild(optiondiv3);
+            // var optiondiv3 = document.createElement('option');
+            // optiondiv3.value = "Open this Select Menu";
+            // optiondiv3.textContent = "Open this Select Menu";
+            // parentdiv1.appendChild(optiondiv3);
 
             $.ajax({
                 type: "GET",
@@ -474,10 +516,10 @@
                             
                             mySet1.add(msg[x].BatchID);
 
-                            var optiondiv1 = document.createElement('option');
-                            optiondiv1.value = msg[x].BatchID;
-                            optiondiv1.textContent = msg[x].BatchID;
-                            parentdiv1.appendChild(optiondiv1);
+                            // var optiondiv1 = document.createElement('option');
+                            // optiondiv1.value = msg[x].BatchID;
+                            // optiondiv1.textContent = msg[x].BatchID;
+                            // parentdiv1.appendChild(optiondiv1);
                         }
                     }
                     $.ajax({
@@ -491,6 +533,13 @@
                                 optiondiv.textContent = msg[x].CourseID;
                                 var parentdiv = document.getElementById('CourseID1');
                                 parentdiv.appendChild(optiondiv);
+                                
+                                var optiondiv1 = document.createElement('option');
+                                optiondiv1.value = msg[x].CourseID;
+                                optiondiv1.textContent = msg[x].CourseID;
+                                var parentdiv1 = document.getElementById('CourseID2');
+                                parentdiv1.appendChild(optiondiv1);
+                                
                             }
                             $.ajax({
                                 type: "GET",
@@ -541,89 +590,87 @@
             });
         }
 
-        document.getElementById('BatchID2').onchange = function () {
-            var parent = document.getElementById('Semester3');
-            const mySet1 = new Set()
-            parent.innerHTML = "";
-            var e = document.getElementById("BatchID2");
-            var strUser = e.value;
-            data = {
-                "BatchID": strUser
-            }
-            $.ajax({
-                type: "POST",
-                url: "/getsemester",
-                dataType: "json",
-                success: function (msg) {
-                    var optiondiv2 = document.createElement('option');
-                    optiondiv2.value = "Open this Select Menu";
-                    optiondiv2.textContent = "Open this Select Menu";
-                    parent.appendChild(optiondiv2);
-                    for (var x = 0; x < msg.length; x++) {
-                        if (mySet1.has(msg[x].Semester) == false) {
-                            var optiondiv = document.createElement('option');
-                            optiondiv.value = msg[x].Semester;
-                            optiondiv.textContent = msg[x].Semester;
-                            parent.appendChild(optiondiv);
-                            mySet1.add(msg[x].Semester);
-                        }
-                    }
-                },
-                data: data
-            });
-        }
+        // document.getElementById('BatchID2').onchange = function () {
+        //     var parent = document.getElementById('Semester3');
+        //     const mySet1 = new Set()
+        //     parent.innerHTML = "";
+        //     var e = document.getElementById("BatchID2");
+        //     var strUser = e.value;
+        //     data = {
+        //         "BatchID": strUser
+        //     }
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "/getsemester",
+        //         dataType: "json",
+        //         success: function (msg) {
+        //             var optiondiv2 = document.createElement('option');
+        //             optiondiv2.value = "Open this Select Menu";
+        //             optiondiv2.textContent = "Open this Select Menu";
+        //             parent.appendChild(optiondiv2);
+        //             for (var x = 0; x < msg.length; x++) {
+        //                 if (mySet1.has(msg[x].Semester) == false) {
+        //                     var optiondiv = document.createElement('option');
+        //                     optiondiv.value = msg[x].Semester;
+        //                     optiondiv.textContent = msg[x].Semester;
+        //                     parent.appendChild(optiondiv);
+        //                     mySet1.add(msg[x].Semester);
+        //                 }
+        //             }
+        //         },
+        //         data: data
+        //     });
+        // }
 
-        document.getElementById('Semester3').onchange = function () {
-            var parent = document.getElementById('CourseID2');
-            const mySet1 = new Set()
-            parent.innerHTML = "";
+        // document.getElementById('Semester3').onchange = function () {
+        //     var parent = document.getElementById('CourseID2');
+        //     const mySet1 = new Set()
+        //     parent.innerHTML = "";
 
-            data = {
-                "BatchID": document.getElementById('BatchID2').value,
-                "Semester":document.getElementById('Semester3').value
-            }
+        //     data = {
+        //         "BatchID": document.getElementById('BatchID2').value,
+        //         "Semester":document.getElementById('Semester3').value
+        //     }
 
-            $.ajax({
-                type: "POST",
-                url: "/getCoursesforBS",
-                dataType: "json",
-                success: function (msg) {
-                    for (var x = 0; x < msg.length; x++) {
-                        if (mySet1.has(msg[x].CourseID) == false) {
-                            var optiondiv = document.createElement('option');
-                            optiondiv.value = msg[x].CourseID;
-                            optiondiv.textContent = msg[x].CourseID;
-                            parent.appendChild(optiondiv);
-                            mySet1.add(msg[x].CourseID);
-                        }
-                    }
-                },
-                data: data
-            });
-        }
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "/getCoursesforBS",
+        //         dataType: "json",
+        //         success: function (msg) {
+        //             for (var x = 0; x < msg.length; x++) {
+        //                 if (mySet1.has(msg[x].CourseID) == false) {
+        //                     var optiondiv = document.createElement('option');
+        //                     optiondiv.value = msg[x].CourseID;
+        //                     optiondiv.textContent = msg[x].CourseID;
+        //                     parent.appendChild(optiondiv);
+        //                     mySet1.add(msg[x].CourseID);
+        //                 }
+        //             }
+        //         },
+        //         data: data
+        //     });
+        // }
 
-        const button1 = document.getElementById('studentRegister');
+        const button1 = document.getElementById('assignStudentBatch');
         button1.addEventListener('click', function (e) {
             console.log('button was clicked');
             var data = {
-                'Name': document.getElementById('name').value,
                 'RollNo': document.getElementById('rollNo').value,
+                'Year':document.getElementById('year1').value,
                 'BatchID': document.getElementById('BatchID').value,
-                'Phone': document.getElementById('phone').value,
-                'Email': document.getElementById('email').value,
-                'Semester': document.getElementById('Semester').value,
-                'password': document.getElementById('password').value,
-            }
+                'Semester': document.getElementById('Semester').value
+            } 
+            // id there is even entry then odd can only be added if odd entry then even can only be added
             $.ajax({
                 type: "POST",
-                url: "/registerStudent",
+                url: "/assignStudenttoBatch",
                 dataType: "json",
                 success: function (msg) {
-                    if (msg.length > 0) {
+                    if (msg[0].status == true) {
                         location.href = "/adminHome";
                     }
-                    else {
-                        alert("Invalid User !");
+                    else{
+                        alert(msg[0].message);
                     }
                 },
                 data: data
@@ -728,17 +775,14 @@
         });
 
         
-        const button6 = document.getElementById('AssignFacultytoBSC');
+        const button6 = document.getElementById('AssignFacultytoCourse');
         button6.addEventListener('click', function (e) {
             console.log('button was clicked');
             var data = {
                 'FacultyID': document.getElementById('FacultyID').value,
-                'BatchID': document.getElementById('BatchID2').value,
-                'Semester': document.getElementById('Semester3').value,
                 'CourseID': document.getElementById('CourseID2').value,
-                'Scheduled':"0",
-                'Lectures':document.getElementById('lectures').value,
-                'Practicals':document.getElementById('practicals').value,
+                'Semester': document.getElementById('Semester3').value,
+                'Year': document.getElementById('year').value
             }
             $.ajax({
                 type: "POST",
@@ -749,7 +793,33 @@
                         location.href = "/adminHome";
                     }
                     else {
-                        alert("You are trying to assign faculty a batch, semester and course it has already been assigned to or Please check your internet Connection and Try Again!");
+                        alert("You are trying to assign faculty a semester and course it has already been assigned to or Please check your internet Connection and Try Again!");
+                    }
+                },
+                data: data
+            });
+        });
+
+        const button7 = document.getElementById('studentRegister');
+        button7.addEventListener('click', function (e) {
+            console.log('button was clicked');
+            var data = {
+                'RollNo': document.getElementById('rollNo1').value,
+                'Email':document.getElementById('email').value,
+                'password': document.getElementById('password').value,
+                'Phone':document.getElementById('phone').value,
+                'Name': document.getElementById('Name').value
+            } 
+            $.ajax({
+                type: "POST",
+                url: "/registerStudent",
+                dataType: "json",
+                success: function (msg) {
+                    if (msg.length > 0) {
+                        location.href = "/adminHome";
+                    }
+                    else {
+                        alert("The Roll Number already been assigned to other student or please check your Internet Connection and try again!");
                     }
                 },
                 data: data
