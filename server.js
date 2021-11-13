@@ -15,16 +15,21 @@ const MongoClient = require("mongodb").MongoClient;
 const mongoURI = "mongodb://ThaparUser:Pass123@cluster0-shard-00-00.jsaod.mongodb.net:27017,cluster0-shard-00-01.jsaod.mongodb.net:27017,cluster0-shard-00-02.jsaod.mongodb.net:27017/TechAcademy?ssl=true&replicaSet=atlas-1u2syf-shard-0&authSource=admin&retryWrites=true&w=majority";
 const url = "mongodb://ThaparUser:Pass123@cluster0-shard-00-00.jsaod.mongodb.net:27017,cluster0-shard-00-01.jsaod.mongodb.net:27017,cluster0-shard-00-02.jsaod.mongodb.net:27017/TechAcademy?ssl=true&replicaSet=atlas-1u2syf-shard-0&authSource=admin&retryWrites=true&w=majority";
 
+// ALL THE GLOBAL VARIABLES WHICH WILL REMAIN CONSTANT THROUGHTOUT THE SESSION OF A USER
+var facultyIDglobal;
+var StudentRollNoglobal;
+
 let db;
 MongoClient.connect(url, (err, database) => {
   if (err) {
     return console.log(err);
   }
   db = database;
-});
+  
+  app.listen((PORT), () => {
+    console.log('listening on deployed server');
+  });
 
-app.listen((PORT), () => {
-  console.log('listening on deployed server');
 });
 
 app.get("/", (req, res) => {
@@ -37,7 +42,7 @@ app.get("/login", (req, res) => {
 
 
 app.get("/home", (req, res) => {
-  res.sendFile(__dirname + "/index.html");
+  res.sendFile(__dirname + "/Student_Timetable.html");
 });
 
 
@@ -77,9 +82,14 @@ app.get("/adminHome", (req, res) => {
 app.get("/FacultyTimeTable", (req, res) => {
   res.sendFile(__dirname + "/Faculty_timetable.html");
 })
+
 app.get("/createSchedule", (req, res) => {
   res.sendFile(__dirname + "/createScheduleforfaculty.html");
 })
+app.get("/markAttendance",(req,res)=>{
+  res.sendFile(__dirname + "/Faculty_MarkAttendance.html");
+})
+
 app.post("/execute", (req, res) => {
   console.log(req.body);
   var data = JSON.stringify(req.body);
@@ -111,6 +121,7 @@ app.post("/signin", (req, res) => {
         res.send(err);
       }
       else {
+        facultyIDglobal = result[0].FacultyID;
         res.send(result);
       }
     });
@@ -470,3 +481,153 @@ app.post("/AssignFaculty", (req, res) => {
     }
   });
 });
+
+app.post('/getFacultyTimeTable', (req, res) => {
+  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.TeacherSem, FacultyID: facultyIDglobal }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+
+app.post('/getFacultyUpcomingClasses', (req, res) => {
+  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.Sem, FacultyID: facultyIDglobal,Day:req.body.day }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/getStudentWeeklyPreference', (req, res) => {
+  db.collection("StudentWeeklyPreference").find({ Year: req.body.Year,Semester:req.body.Semester,BatchID: req.body.BatchID,CourseID:req.body.CourseID }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+
+app.post('/getStatusFacultyUpcomingClasses', (req, res) => {
+  db.collection("LectureScheduledHistory").find({ Year:req.body.Year,Semester:req.body.Semester,BatchID: req.body.BatchID,CourseID:req.body.CourseID,TeacherSem:req.body.TeacherSem,FacultyID:facultyIDglobal,Date:req.body.Date,TimeSlot:req.body.TimeSlot }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+app.post("/UpdateLecSchHis", (req, res) => {
+  var data = {
+    'Year':req.body.Year,
+    'FacultyID':facultyIDglobal,
+    'BatchID':req.body.BatchID,
+    'CourseID':req.body.CourseID,
+    'Semester':req.body.Semester,
+    'TeacherSem':req.body.TeacherSem,
+    'Date':req.body.Date, 
+    'TimeSlot':req.body.TimeSlot,
+    'Status':req.body.Status
+  };
+  db.collection("LectureScheduledHistory").save(data, (err, result) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("click added to db");
+    res.send([
+      {
+        message: "Request successfully logged",
+        status: true,
+      },
+    ]);
+  });
+});
+
+var pcCourseID = "";
+var pcBatchID = "";
+var pcYear = "";
+var pcSemester = "";
+var pcTimeSlot = "";
+var pcdate = "";
+
+app.post('/getPresentClass', (req, res) => {
+  db.collection("LectureScheduledHistory").find({ Year:req.body.Year,TeacherSem:req.body.Sem,FacultyID:facultyIDglobal,Date:req.body.Date }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      if(result.length>0){
+        pcCourseID = result[0].CourseID;
+        pcBatchID = result[0].BatchID;
+        pcYear = result[0].Year;
+        pcSemester = result[0].Semester;
+        pcTimeSlot = result[0].TimeSlot;
+        pcdate = result[0].Date;
+      }
+      res.send(result);
+    }
+  });
+});
+
+app.post('/getStudentsofPresentClass', (req, res) => {
+  db.collection("StudentBatchInfo").aggregate([
+    {"$lookup": {
+      "from": "Students",
+      "localField": "RollNo",
+      "foreignField": "RollNo",
+      "as":"StudentInfoTable"
+    }},
+    { $unwind: "$StudentInfoTable" },
+    {
+      $match: {
+        $and: [{"Year":pcYear }, {"Semester":pcSemester},{"BatchID": pcBatchID}]
+      }
+    },
+    {
+      $project: {
+        RollNo: "$StudentInfoTable.RollNo",
+        Name: "$StudentInfoTable.Name"
+      }
+    }
+  ]).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/markPresent', (req, res) => {
+  var data = {
+    'RollNo':req.body.RollNo,
+    'Year':pcYear,
+    'BatchID':pcBatchID,
+    'Semester':pcSemester,
+    'CourseID':pcCourseID,
+    'Date':pcdate,
+    'TimeSlot':pcTimeSlot
+  }
+  db.collection("StudentAttendance").save(data, (err, result) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("click added to db");
+    res.send([
+      {
+        message: "Request successfully logged",
+        status: true,
+      },
+    ]);
+  })
+});
+

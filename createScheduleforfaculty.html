@@ -563,6 +563,7 @@
                         div2.textContent = 'Semester : '+msg[x].Semester;
                         var parentid = dict1[msg[x].TimeSlot].toString()+dict2[msg[x].Day].toString();
                         var parentdiv = document.getElementById(parentid);
+                        parentdiv.innerHTML=""; //new code added
                         parentdiv.appendChild(span);
                         parentdiv.appendChild(div1);
                         parentdiv.appendChild(div2);
