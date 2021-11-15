@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+
+    <title>Forms / Layouts - NiceAdmin Bootstrap Template</title>
+    <meta content="" name="description">
+    <meta content="" name="keywords">
+
+    <!-- Favicons -->
+    <link href="assets/img/favicon.png" rel="icon">
+    <link href="assets/img/apple-touch-icon.png" rel="apple-touch-icon">
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.gstatic.com" rel="preconnect">
+    <link
+        href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i|Nunito:300,300i,400,400i,600,600i,700,700i|Poppins:300,300i,400,400i,500,500i,600,600i,700,700i"
+        rel="stylesheet">
+
+    <!-- Vendor CSS Files -->
+    <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet">
+    <link href="assets/vendor/remixicon/remixicon.css" rel="stylesheet">
+    <link href="assets/vendor/boxicons/css/boxicons.min.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.snow.css" rel="stylesheet">
+    <link href="assets/vendor/quill/quill.bubble.css" rel="stylesheet">
+    <link href="assets/vendor/simple-datatables/style.css" rel="stylesheet">
+
+    <!-- Template Main CSS File -->
+    <link href="assets/css/style.css" rel="stylesheet">
+</head>
+<style>
+  
+    /* .fw-bold{
+        font-size:20px;
+        margin-bottom: 10px;
+    } */
+    .card-body{
+        height:500px !important;
+        overflow-y: scroll !important;
+    }
+</style>
+
+<body>
+
+    <!-- ======= Header ======= -->
+    <header id="header" class="header fixed-top d-flex align-items-center">
+
+        <div class="d-flex align-items-center justify-content-between">
+            <a href="index.html" class="logo d-flex align-items-center">
+                <img src="assets/img/logo.png" alt="">
+                <span class="d-none d-lg-block">NiceAdmin</span>
+            </a>
+            <i class="bi bi-list toggle-sidebar-btn"></i>
+        </div><!-- End Logo -->
+    </header><!-- End Header -->
+
+    <!-- ======= Sidebar ======= -->
+    <aside id="sidebar" class="sidebar">
+
+        <ul class="sidebar-nav" id="sidebar-nav">
+
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/home">
+                    <i class="bi bi-grid"></i>
+                    <span>Student TimeTable</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Student_Attendance">
+                    <i class="bi bi-grid"></i>
+                    <span>Student Attendance</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Student_FacultyContactInfo">
+                    <i class="bi bi-grid"></i>
+                    <span>Faculty Contact Information</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Student_ExamInfo">
+                    <i class="bi bi-grid"></i>
+                    <span>Online Exam Information</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Student_OfflineExamInfo">
+                    <i class="bi bi-grid"></i>
+                    <span>Offline Written Exams Information</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+        </ul>
+
+    </aside><!-- End Sidebar-->
+
+    <main id="main" class="main">
+
+        <div class="pagetitle">
+            <h1>Form Layouts</h1>
+            <nav>
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
+                    <li class="breadcrumb-item">Forms</li>
+                    <li class="breadcrumb-item active">Layouts</li>
+                </ol>
+            </nav>
+        </div><!-- End Page Title -->
+        <section class="section">
+            <div class="row">
+                <div class="col-sm">
+                    <div class="card">
+                        <div class="card-body" id="UpcomingExams">
+                            <h5 class="card-title">Exams Checked Once</h5>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">ExamID - MCQ2 </div>
+                                        <h8>Course ID - UCS538</h8>
+                                        <br>
+                                        <h8>Time - 09:00</h8>
+                                        <br>
+                                        <h8>Duration - 10 mins</h8>
+                                        <br>
+                                        <h8>Date - 15-11-2021</h8>
+                                        <br>
+                                        <h8>Total Marks - 20</h8>
+                                    </div>
+                                    <button class="btn btn-outline-success"
+                                        onclick="AttemptExam('coding')">Attempt</button>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">ExamID - MCQ2 </div>
+                                        <h8>Course ID - UCS538</h8>
+                                        <br>
+                                        <h8>Time - 09:00</h8>
+                                        <br>
+                                        <h8>Duration - 10 mins</h8>
+                                        <br>
+                                        <h8>Date - 15-11-2021</h8>
+                                        <br>
+                                        <h8>Total Marks - 20</h8>
+                                    </div>
+                                    <button class="btn btn-outline-success"
+                                        onclick="AttemptExam('mcq')">Attempt</button>
+                                </li>
+
+                            </ol><!-- End with custom content -->
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card">
+                        <div class="card-body" id="UpcomingExams">
+                            <h5 class="card-title">Exams Under Rechecking</h5>
+                            <ol class="list-group list-group-numbered">
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">ExamID - MCQ2 </div>
+                                        <h8>Course ID - UCS538</h8>
+                                        <br>
+                                        <h8>Time - 09:00</h8>
+                                        <br>
+                                        <h8>Duration - 10 mins</h8>
+                                        <br>
+                                        <h8>Date - 15-11-2021</h8>
+                                        <br>
+                                        <h8>Total Marks - 20</h8>
+                                    </div>
+                                    <button class="btn btn-outline-success"
+                                        onclick="AttemptExam('coding')">Attempt</button>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">ExamID - MCQ2 </div>
+                                        <h8>Course ID - UCS538</h8>
+                                        <br>
+                                        <h8>Time - 09:00</h8>
+                                        <br>
+                                        <h8>Duration - 10 mins</h8>
+                                        <br>
+                                        <h8>Date - 15-11-2021</h8>
+                                        <br>
+                                        <h8>Total Marks - 20</h8>
+                                    </div>
+                                    <button class="btn btn-outline-success"
+                                        onclick="AttemptExam('mcq')">Attempt</button>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">Subheading</div>
+                                        Cras justo odio
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">14</span>
+                                </li>
+                                <li class="list-group-item d-flex justify-content-between align-items-start">
+                                    <div class="ms-2 me-auto">
+                                        <div class="fw-bold">Subheading</div>
+                                        Cras justo odio
+                                    </div>
+                                    <span class="badge bg-primary rounded-pill">14</span>
+                                </li>
+                            </ol><!-- End with custom content -->
+
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Final Reviewed Exams and Marks Obtained</h5>
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Year</label>
+                                <div class="col-sm-6">
+                                    <select class="form-select" id="year" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="2021">2021</option>
+                                        <option value="2020">2020</option>
+                                        <option value="2019">2019</option>
+                                        <option value="2018">2018</option>
+                                        <option value="2017">2017</option>
+                                        <option value="2016">2016</option>
+                                        <option value="2015">2015</option>
+                                        <option value="2014">2014</option>
+                                        <option value="2013">2013</option>
+                                        <option value="2012">2012</option>
+                                        <option value="2011">2011</option>
+                                        <option value="2010">2010</option>
+                                        <option value="2009">2009</option>
+                                        <option value="2008">2008</option>
+                                        <option value="2007">2007</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Choose Batch+Semester+Year</label>
+                                <div class="col-sm-6">
+                                    <select class="form-select" id="Sem" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Choose CourseID</label>
+                                <div class="col-sm-6">
+                                    <select class="form-select" id="Sem" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row mb-3">
+                                <label class="col-sm-4 col-form-label">Choose Exam ID</label>
+                                <div class="col-sm-6">
+                                    <select class="form-select" id="Sem" aria-label="Default select example">
+                                        <option selected>Open this select menu</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+            <div class="row">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="card-title">Review Your Checked Answer Sheet</h5>
+                        <h5 class="card-title">Exam ID + COURSEID</h5>
+                        <h5 class="card-title">Your Total Marks Obtained: </h5>
+                        <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label">Question1 : </label>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-4 col-form-label">Marks Obtained : </label>
+                        </div>
+                        <button class="btn btn-outline-danger">Recheck</button>
+                        <button class="btn btn-outline-success">Checked</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main><!-- End #main -->
+    <a href="#" class="back-to-top d-flex align-items-center justify-content-center"><i
+            class="bi bi-arrow-up-short"></i></a>
+
+    <!-- Vendor JS Files -->
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
+    <script src="assets/vendor/quill/quill.min.js"></script>
+    <script src="assets/vendor/tinymce/tinymce.min.js"></script>
+    <script src="assets/vendor/simple-datatables/simple-datatables.js"></script>
+    <script src="assets/vendor/chart.js/chart.min.js"></script>
+    <script src="assets/vendor/apexcharts/apexcharts.min.js"></script>
+    <script src="assets/vendor/echarts/echarts.min.js"></script>
+
+    <!-- Template Main JS File -->
+    <script src="assets/js/main.js"></script>
+
+</body>
+<script>
+    function AttemptExam(type) {
+        location.href = '/' + type;
+    }
+</script>
+
+</html>

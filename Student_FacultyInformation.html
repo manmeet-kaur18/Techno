@@ -165,13 +165,13 @@
         .card-title {
             font-size: 25px;
         }
+        .btn{
+            margin-top: 0;
+            margin-bottom: 0;
+            margin-left: 0;
+            margin-right: 5px;
+        }
     </style>
-    <!-- =======================================================
-  * Template Name: NiceAdmin - v2.1.0
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -194,55 +194,37 @@
     <!-- ======= Sidebar ======= -->
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="/FacultyTimeTable">
-                    <i class="bi bi-grid"></i>
-                    <span>Faculty Time Table</span>
-                </a>
-            </li><!-- End Dashboard Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="/Faculty_StudentInfo">
-                    <i class="bi bi-grid"></i>
-                    <span>Student Information</span>
-                </a>
-            </li><!-- End Dashboard Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="/ScheduleNewExam">
-                    <i class="bi bi-grid"></i>
-                    <span>Schedule a MCQ Exam</span>
-                </a>
-            </li><!-- End Dashboard Nav -->
-            <li class="nav-item">
-                <a class="nav-link collapsed" href="/Faculty_RecheckRequests">
-                    <i class="bi bi-grid"></i>
-                    <span>Recheck Requests from Students</span>
-                </a>
-            </li><!-- End Dashboard Nav -->
-            <li>
-                <a class="nav-link collapsed" href="/UploadCheckedAnswerSheets">
-                    <i class="bi bi-grid"></i>
-                    <span>Upload Checked Answer Sheets</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link collapsed" href="/UpdateAnwserOnlineExam">
-                    <i class="bi bi-grid"></i>
-                    <span>Update Answers for Online Examination</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link collapsed" href="/UpdateAnwserOnlineExam">
-                    <i class="bi bi-grid"></i>
-                    <span>Cancel a Lecture</span>
-                </a>
-            </li>
-            <li>
-                <a class="nav-link collapsed" href="/ScheduleCodingExam">
-                    <i class="bi bi-grid"></i>
-                    <span>Schedule a Coding Exam</span>
-                </a>
-            </li>
             
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/home">
+                    <i class="bi bi-grid"></i>
+                    <span>Student TimeTable</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Student_Attendance">
+                    <i class="bi bi-grid"></i>
+                    <span>Student Attendance</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Student_FacultyContactInfo">
+                    <i class="bi bi-grid"></i>
+                    <span>Faculty Contact Information</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Student_ExamInfo">
+                    <i class="bi bi-grid"></i>
+                    <span>Online Exams Information</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Student_OfflineExamInfo">
+                    <i class="bi bi-grid"></i>
+                    <span>Offline Written Exams Information</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
         </ul>
       
     </aside><!-- End Sidebar-->
@@ -266,45 +248,13 @@
 
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Student Information</h5>
-                        <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label">Select Year</label>
-                            <div class="col-sm-10">
-                                <select class="form-select" id="year" aria-label="Default select example">
-                                    <option selected>Open this select menu</option>
-                                            <option value="2021">2021</option>
-                                            <option value="2020">2020</option>
-                                            <option value="2019">2019</option>
-                                            <option value="2018">2018</option>
-                                            <option value="2017">2017</option>
-                                            <option value="2016">2016</option>
-                                            <option value="2015">2015</option>
-                                            <option value="2014">2014</option>
-                                            <option value="2013">2013</option>
-                                            <option value="2012">2012</option>
-                                            <option value="2011">2011</option>
-                                            <option value="2010">2010</option>
-                                            <option value="2009">2009</option>
-                                            <option value="2008">2008</option>
-                                            <option value="2007">2007</option>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label">Select Odd or Even Semester (Odd-1 or Even-2)</label>
-                            <div class="col-sm-10">
-                                <select class="form-select" id="TeacherSem" aria-label="Default select example">
-                                    <option selected>Open this select menu</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
-                                </select>
-                            </div>
-                        </div>
+                        <h5 class="card-title">Your Assigned Faculty and Weekly Preference</h5>
+                  
                             <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label">Select Batch-Semester</label>
+                                <label class="col-sm-2 col-form-label">Select Your Batch-Semester-Year</label>
                                 <div class="col-sm-10">
                                     <select class="form-select" id="BatchDetail" aria-label="Default select example">
-                                        <option selected>Open this select menu</option>
+                                        <!-- <option selected>Open this select menu</option> -->
                                     </select>
                                 </div>
                             </div>
@@ -312,19 +262,22 @@
                         <table class="table table-bordered">
                             <thead>
                                 <tr>
-                                    <th scope="col">Student Roll Number</th>
-                                    <th scope="col">Student Name</th>
-                                    <th scope="col">Student Phone Number</th>
-                                    <th scope="col">Student EmailID</th>
+                                    <th scope="col">Faculty ID</th>
+                                    <th scope="col">Faculty Name</th>
+                                    <th scope="col">Course ID</th>
+                                    <th scope="col">Faculty Phone Number</th>
+                                    <th scope="col">Faculty Email ID</th>
+                                    <th scope="col">Mark Your Weekly Preference of Mode (Available Sunday)</th>
                                 </tr>
                             </thead>
-                            <tbody id="StudentDetail">
-                              
+                            <tbody id="FacultyDetails">
+                        
                             </tbody>
                         </table>
                         <!-- End Table with stripped rows -->
                     </div>
                 </div>
+
             </div>
         </section>
     </main>
@@ -344,34 +297,98 @@
 
     <!-- Template Main JS File -->
     <script src="/assets/js/main.js"></script>
-    <script>
-        document.getElementById('TeacherSem').onchange= function(){
-            var data={
-                'Year':document.getElementById('year').value,
-                'TeacherSem':document.getElementById('TeacherSem').value,
-            }
-            var parentdiv = document.getElementById('BatchDetail');
-            parentdiv.innerHTML="";
+        <script>
+            $(document).ready(function () {
+                var parentdiv = document.getElementById('BatchDetail');
+                var optiondiv4 = document.createElement('option');
+                optiondiv4.value = "Open this Select Menu";
+                optiondiv4.textContent = "Open this Select Menu";
+                parentdiv.appendChild(optiondiv4);
 
-            var optiondiv4 = document.createElement('option');
-            optiondiv4.value = "Open this Select Menu";
-            optiondiv4.textContent = "Open this Select Menu";
-            parentdiv.appendChild(optiondiv4);
+                $.ajax({
+                    type: "POST",
+                    url: "/getStudentBatches",
+                    dataType: "json",
+                    success: function (msg) {
+                        if(msg.length>0){
+                            for(var x=0;x<msg.length;x++){
+                                var optiondiv = document.createElement('option');
+                                optiondiv.value = msg[x].BatchID+','+msg[x].Year+','+msg[x].Semester;
+                                optiondiv.textContent = msg[x].BatchID+','+msg[x].Year+','+msg[x].Semester;
+                                parentdiv.appendChild(optiondiv);
+                            }
+                        }
+                    }
+                });
+            });
+
+        document.getElementById('BatchDetail').onchange = function(){
+            var parent = document.getElementById('FacultyDetails');
+            parent.innerHTML="";
+            var data={
+                'Year':document.getElementById('BatchDetail').value.split(',')[1],
+                'BatchID':document.getElementById('BatchDetail').value.split(',')[0],
+                'Semester':document.getElementById('BatchDetail').value.split(',')[2]
+            }
             mySet1=new Set();
-            
             $.ajax({
                 type: "POST",
-                url: "/getAssignedBatches",
+                url: "/getAssignedFaculty",
                 dataType: "json",
                 success: function (msg) {
                     for(var x=0;x<msg.length;x++){
-                        str = msg[x].BatchID+','+msg[x].Semester;
-                        if(mySet1.has(str)==false){
-                            var optiondiv = document.createElement('option');
-                            optiondiv.value = msg[x].BatchID+','+msg[x].Semester;
-                            optiondiv.textContent = msg[x].BatchID+','+msg[x].Semester;
-                            parentdiv.appendChild(optiondiv);
-                            mySet1.add(str);
+                        if(mySet1.has(msg[x].FacultyID)==false){
+                        var tr = document.createElement('tr');
+                        var th = document.createElement('th');
+                        var td1 = document.createElement('td');
+                        var td2 = document.createElement('td');
+                        var td3 = document.createElement('td');
+                        var td4 = document.createElement('td');
+
+                        var dict1={"1":"Monday","2":"Tuesday","3":"Wednesday","4":"Thursday","5":"Friday","6":"Saturday","7":"Sunday"};
+                        
+                        th.setAttribute('scope','row');
+                        th.textContent = msg[x].FacultyID;
+                        td1.textContent = msg[x].FacultyInfo.FacultyName;
+                        td2.textContent = msg[x].CourseID;
+                        td3.textContent = msg[x].FacultyInfo.phone;
+                        td4.textContent = msg[x].FacultyInfo.email;
+
+                        tr.appendChild(th);
+                        tr.appendChild(td1);
+                        tr.appendChild(td2);
+                        tr.appendChild(td3);
+                        tr.appendChild(td4);
+                        
+                        //Actual
+                        //var d = new Date();
+                        //var presentday = dict1[d.getDay()];
+                        
+                        //Testing
+                        var presentday = "Sunday";
+                        if(presentday=="Sunday"){
+                            var td5 = document.createElement('td');
+                            // var td6 = document.createElement('td');
+                            var button1 = document.createElement('button');
+                            var button2 = document.createElement('button');
+                            
+                            button1.setAttribute('class','btn btn-outline-success');
+                            button1.textContent = "Online";
+                            str = "sendPreference('" + msg[x].CourseID + "',"+ "'1')";
+                            button1.setAttribute('onclick',str);
+
+                            button2.setAttribute('class','btn btn-outline-info');
+                            button2.textContent = "Offline";
+                            str = "sendPreference('" + msg[x].CourseID + "',"+ "'0')";
+                            button2.setAttribute('onclick',str);
+
+                            td5.appendChild(button1);
+                            td5.appendChild(button2);
+                            tr.appendChild(td5);
+                            // tr.appendChild(td6);
+                        }
+                        parent.appendChild(tr);
+                        mySet1.add(msg[x].FacultyID);
                         }
                     }
                 },
@@ -379,45 +396,41 @@
             });
         }
 
-        document.getElementById('BatchDetail').onchange = function(){
-            var parent = document.getElementById('StudentDetail');
-            parent.innerHTML="";
-            var data={
-                'Year':document.getElementById('year').value,
+        //to do - Testing
+        function sendPreference(CourseID,Online){
+            //to calculate weekno from date Testing - task 
+            //var weekno = "46";
+            // var month = d.getMonth();
+            // var date = d.getDate();
+            // var year = d.getFullYear();
+            // var todaydate = date+'-'+month+'-'+year;
+            todayDate = "14-11-2021";
+
+            var data = {
+                'Year':document.getElementById('BatchDetail').value.split(',')[1],
                 'BatchID':document.getElementById('BatchDetail').value.split(',')[0],
-                'Semester':document.getElementById('BatchDetail').value.split(',')[1]
-            }
+                'Semester':document.getElementById('BatchDetail').value.split(',')[2],
+                'Online':Online,
+                'CourseID':CourseID,
+                'Date':todayDate
+            };
 
             $.ajax({
                 type: "POST",
-                url: "/getStudentsofBatch",
+                url: "/SaveWeeklyPreference",
                 dataType: "json",
                 success: function (msg) {
-                    for(var x=0;x<msg.length;x++){
-                        var tr = document.createElement('tr');
-                        var th = document.createElement('th');
-                        var td1 = document.createElement('td');
-                        var td2 = document.createElement('td');
-                        var td3 = document.createElement('td');
-
-                        th.setAttribute('scope','row');
-                        th.textContent = msg[x].RollNo;
-                        td1.textContent = msg[x].StudentInfoTable.Name;
-                        td2.textContent = msg[x].StudentInfoTable.Phone;
-                        td3.textContent = msg[x].StudentInfoTable.Email;
-
-                        tr.appendChild(th);
-                        tr.appendChild(td1);
-                        tr.appendChild(td2);
-                        tr.appendChild(td3);
-
-                        parent.appendChild(tr);
+                    if(msg[0].status==true){
+                        alert("Your Preference Added for "+CourseID);
+                    }
+                    if(msg[0].status==false){
+                        alert("You have Already given your Preference for this CourseID for this Week and Try Again")
                     }
                 },
                 data:data
             });
         }
-    </script>
+        </script>
 </body>
 <script>
 </script>

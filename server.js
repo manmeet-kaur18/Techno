@@ -9,6 +9,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.set("view engine", "ejs");
 var axios = require('axios');
+const mongodb = require("mongodb");
 const MongoClient = require("mongodb").MongoClient;
 
 // DB
@@ -25,7 +26,7 @@ MongoClient.connect(url, (err, database) => {
     return console.log(err);
   }
   db = database;
-  
+
   app.listen((PORT), () => {
     console.log('listening on deployed server');
   });
@@ -62,18 +63,18 @@ app.get("/coding", (req, res) => {
 });
 
 
-app.get("/ClassList", (req, res) => {
-  res.sendFile(__dirname + "/faculty_ClassList.html");
-});
+// app.get("/ClassList", (req, res) => {
+//   res.sendFile(__dirname + "/faculty_ClassList.html");
+// });
 
 
 app.get("/studentList", (req, res) => {
   res.sendFile(__dirname + "/faculty_StudentList.html");
 });
 
-app.get("/schedule", (req, res) => {
-  res.sendFile(__dirname + "/faculty_classSchedule.html");
-})
+// app.get("/schedule", (req, res) => {
+//   res.sendFile(__dirname + "/faculty_classSchedule.html");
+// })
 
 app.get("/adminHome", (req, res) => {
   res.sendFile(__dirname + "/adminhome.html");
@@ -86,10 +87,49 @@ app.get("/FacultyTimeTable", (req, res) => {
 app.get("/createSchedule", (req, res) => {
   res.sendFile(__dirname + "/createScheduleforfaculty.html");
 })
-app.get("/markAttendance",(req,res)=>{
+app.get("/markAttendance", (req, res) => {
   res.sendFile(__dirname + "/Faculty_MarkAttendance.html");
 })
 
+app.get("/Student_Attendance", (req, res) => {
+  res.sendFile(__dirname + "/Student_Attendance.html");
+})
+
+app.get("/Student_FacultyContactInfo", (req, res) => {
+  res.sendFile(__dirname + "/Student_FacultyInformation.html");
+})
+
+app.get("/Student_ExamInfo", (req, res) => {
+  res.sendFile(__dirname + "/Student_ExamInfo.html");
+})
+
+app.get("/Student_OfflineExamInfo", (req, res) => {
+  res.sendFile(__dirname + "/Student_OfflineExamInfo.html");
+})
+
+app.get("/Faculty_StudentInfo", (req, res) => {
+  res.sendFile(__dirname + "/faculty_StudentList.html");
+})
+
+app.get("/Faculty_RecheckRequests", (req, res) => {
+  res.sendFile(__dirname + "/Faculty_RecheckRequests.html");
+})
+
+app.get("/UploadCheckedAnswerSheets", (req, res) => {
+  res.sendFile(__dirname + "/faculty_UploadCheckedAnswers.html");
+})
+
+app.get("/ScheduleNewExam", (req, res) => {
+  res.sendFile(__dirname + "/faculty_ScheduleNewExam.html");
+})
+
+app.get("/ScheduleCodingExam", (req, res) => {
+  res.sendFile(__dirname + "/Faculty_AddaNewCodingExam.html");
+})
+
+app.get("/UpdateAnwserOnlineExam", (req, res) => {
+  res.sendFile(__dirname + "/Faculty_UpdateAnwer.html");
+})
 app.post("/execute", (req, res) => {
   console.log(req.body);
   var data = JSON.stringify(req.body);
@@ -113,25 +153,31 @@ app.post("/execute", (req, res) => {
 })
 
 //Login
-
 app.post("/signin", (req, res) => {
   if (req.body.role == "faculty") {
-    db.collection("Faculty").find({ FacultyID: req.body.FacultyID, password: req.body.password }).toArray((err, result) => {
+    db.collection("Faculty").find({ FacultyID: req.body.ID, password: req.body.password }).toArray((err, result) => {
       if (err) {
         res.send(err);
       }
-      else {
+      if(result.length==0){
+        res.send([]);
+      }
+      else{
         facultyIDglobal = result[0].FacultyID;
         res.send(result);
       }
     });
   }
   else if (req.body.role == "student") {
-    db.collection("Students").find({ RollNo: req.body.RollNo, password: req.body.password }).toArray((err, result) => {
+    db.collection("Students").find({ RollNo: req.body.ID, password: req.body.password }).toArray((err, result) => {
       if (err) {
         res.send(err);
       }
-      else {
+      if(result.length==0){
+        res.send([]);
+      }
+      else{
+      StudentRollNoglobal = result[0].RollNo;
         res.send(result);
       }
     });
@@ -147,7 +193,6 @@ app.post("/signin", (req, res) => {
     });
   }
 })
-
 
 //admin home functionalities
 app.get('/getBatchlist', (req, res) => {
@@ -398,7 +443,7 @@ app.post("/registerCourse", (req, res) => {
 });
 
 app.post("/addCoursetoBranch", (req, res) => {
-  db.collection("CourseUndertaken").find({ BranchID: req.body.BranchID, Semester: req.body.Semester, CourseID: req.body.CourseID }).toArray((err, result) => {
+  db.collection("CourseUndertaken").find({ BranchID: req.body.BranchID, Semester: req.body.Semester, CourseID: req.body.CourseID, Year: req.body.Year }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
@@ -494,7 +539,7 @@ app.post('/getFacultyTimeTable', (req, res) => {
 
 
 app.post('/getFacultyUpcomingClasses', (req, res) => {
-  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.Sem, FacultyID: facultyIDglobal,Day:req.body.day }).toArray((err, result) => {
+  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.Sem, FacultyID: facultyIDglobal, Day: req.body.day }).toArray((err, result) => {
     if (err) {
       res.send(err);
     } else {
@@ -504,7 +549,7 @@ app.post('/getFacultyUpcomingClasses', (req, res) => {
 });
 
 app.post('/getStudentWeeklyPreference', (req, res) => {
-  db.collection("StudentWeeklyPreference").find({ Year: req.body.Year,Semester:req.body.Semester,BatchID: req.body.BatchID,CourseID:req.body.CourseID }).toArray((err, result) => {
+  db.collection("StudentWeeklyPreference").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, CourseID: req.body.CourseID }).toArray((err, result) => {
     if (err) {
       res.send(err);
     } else {
@@ -515,7 +560,7 @@ app.post('/getStudentWeeklyPreference', (req, res) => {
 
 
 app.post('/getStatusFacultyUpcomingClasses', (req, res) => {
-  db.collection("LectureScheduledHistory").find({ Year:req.body.Year,Semester:req.body.Semester,BatchID: req.body.BatchID,CourseID:req.body.CourseID,TeacherSem:req.body.TeacherSem,FacultyID:facultyIDglobal,Date:req.body.Date,TimeSlot:req.body.TimeSlot }).toArray((err, result) => {
+  db.collection("LectureScheduledHistory").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, CourseID: req.body.CourseID, TeacherSem: req.body.TeacherSem, FacultyID: facultyIDglobal, Date: req.body.Date, TimeSlot: req.body.TimeSlot }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
@@ -527,15 +572,15 @@ app.post('/getStatusFacultyUpcomingClasses', (req, res) => {
 
 app.post("/UpdateLecSchHis", (req, res) => {
   var data = {
-    'Year':req.body.Year,
-    'FacultyID':facultyIDglobal,
-    'BatchID':req.body.BatchID,
-    'CourseID':req.body.CourseID,
-    'Semester':req.body.Semester,
-    'TeacherSem':req.body.TeacherSem,
-    'Date':req.body.Date, 
-    'TimeSlot':req.body.TimeSlot,
-    'Status':req.body.Status
+    'Year': req.body.Year,
+    'FacultyID': facultyIDglobal,
+    'BatchID': req.body.BatchID,
+    'CourseID': req.body.CourseID,
+    'Semester': req.body.Semester,
+    'TeacherSem': req.body.TeacherSem,
+    'Date': req.body.Date,
+    'TimeSlot': req.body.TimeSlot,
+    'Status': req.body.Status
   };
   db.collection("LectureScheduledHistory").save(data, (err, result) => {
     if (err) {
@@ -559,12 +604,12 @@ var pcTimeSlot = "";
 var pcdate = "";
 
 app.post('/getPresentClass', (req, res) => {
-  db.collection("LectureScheduledHistory").find({ Year:req.body.Year,TeacherSem:req.body.Sem,FacultyID:facultyIDglobal,Date:req.body.Date }).toArray((err, result) => {
+  db.collection("LectureScheduledHistory").find({ Year: req.body.Year, TeacherSem: req.body.Sem, FacultyID: facultyIDglobal, Date: req.body.Date }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
     else {
-      if(result.length>0){
+      if (result.length > 0) {
         pcCourseID = result[0].CourseID;
         pcBatchID = result[0].BatchID;
         pcYear = result[0].Year;
@@ -579,24 +624,27 @@ app.post('/getPresentClass', (req, res) => {
 
 app.post('/getStudentsofPresentClass', (req, res) => {
   db.collection("StudentBatchInfo").aggregate([
-    {"$lookup": {
-      "from": "Students",
-      "localField": "RollNo",
-      "foreignField": "RollNo",
-      "as":"StudentInfoTable"
-    }},
+    {
+      "$lookup": {
+        "from": "Students",
+        "localField": "RollNo",
+        "foreignField": "RollNo",
+        "as": "StudentInfoTable"
+      }
+    },
     { $unwind: "$StudentInfoTable" },
     {
       $match: {
-        $and: [{"Year":pcYear }, {"Semester":pcSemester},{"BatchID": pcBatchID}]
+        $and: [{ "Year": pcYear }, { "Semester": pcSemester }, { "BatchID": pcBatchID }]
       }
-    },
-    {
-      $project: {
-        RollNo: "$StudentInfoTable.RollNo",
-        Name: "$StudentInfoTable.Name"
-      }
-    }
+    } //,
+    // {
+    //   $project: {
+    //     RollNo: "$StudentInfoTable.RollNo",
+    //     Name: "$StudentInfoTable.Name",
+
+    //   }
+    // }
   ]).toArray((err, result) => {
     if (err) {
       res.send(err);
@@ -609,13 +657,13 @@ app.post('/getStudentsofPresentClass', (req, res) => {
 
 app.post('/markPresent', (req, res) => {
   var data = {
-    'RollNo':req.body.RollNo,
-    'Year':pcYear,
-    'BatchID':pcBatchID,
-    'Semester':pcSemester,
-    'CourseID':pcCourseID,
-    'Date':pcdate,
-    'TimeSlot':pcTimeSlot
+    'RollNo': req.body.RollNo,
+    'Year': pcYear,
+    'BatchID': pcBatchID,
+    'Semester': pcSemester,
+    'CourseID': pcCourseID,
+    'Date': pcdate,
+    'TimeSlot': pcTimeSlot
   }
   db.collection("StudentAttendance").save(data, (err, result) => {
     if (err) {
@@ -631,3 +679,390 @@ app.post('/markPresent', (req, res) => {
   })
 });
 
+
+app.post('/getStudentBatch', (req, res) => {
+  db.collection("StudentBatchInfo").find({ Year: req.body.Year, RollNo: StudentRollNoglobal }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/getStudentTimeTable', (req, res) => {
+  db.collection("LectureSchedule").aggregate([
+    {
+      "$lookup": {
+        "from": "Faculty",
+        "localField": "FacultyID",
+        "foreignField": "FacultyID",
+        "as": "FacultyInfo"
+      }
+    },
+    { $unwind: "$FacultyInfo" },
+    {
+      $match: {
+        $and: [{ "Year": req.body.Year }, { "BatchID": req.body.BatchID }, { "Semester": req.body.Semester }, { "TeacherSem": req.body.TeacherSem }]
+      }
+    },
+    // {
+    //   $project: {
+    //     CourseID: "$LectureSchedule.CourseID",
+    //     FacultyID: "$FacultyInfo.FacultyID",
+    //     FacultyName:"$FacultyInfo.FacultyName",
+    //     phone:"$FacultyInfo.phone",
+    //     email:"$FacultyInfo.email",
+    //     TimeSlot:"$LectureSchedule.TimeSlot",
+    //     Day:"$LectureSchedule.Day"
+    //   }
+    // }
+  ]).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+//tocheck
+app.post('/getStudentUpcomingClasses', (req, res) => {
+  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.TeacherSem, BatchID: req.body.BatchID, Semester: req.body.Semester, Day: req.body.day }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+//to check
+app.post('/getStatusStdUpCls', (req, res) => {
+  db.collection("LectureScheduledHistory").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, CourseID: req.body.CourseID, TeacherSem: req.body.TeacherSem, FacultyID: req.body.FacultyID, Date: req.body.Date, TimeSlot: req.body.TimeSlot }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/getStudentBatches', (req, res) => {
+  db.collection("StudentBatchInfo").find({ RollNo: StudentRollNoglobal }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+
+app.post('/getAssignedFaculty', (req, res) => {
+  db.collection("LectureSchedule").aggregate([
+    {
+      "$lookup": {
+        "from": "Faculty",
+        "localField": "FacultyID",
+        "foreignField": "FacultyID",
+        "as": "FacultyInfo"
+      }
+    },
+    { $unwind: "$FacultyInfo" },
+    {
+      $match: {
+        $and: [{ "Year": req.body.Year }, { "Semester": req.body.Semester }, { "BatchID": req.body.BatchID }]
+      }
+    }
+  ]).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+
+app.post('/getAssignedBatches', (req, res) => {
+  db.collection("LectureSchedule").find({ FacultyID: facultyIDglobal, Year: req.body.Year, TeacherSem: req.body.TeacherSem }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/getStudentsofBatch', (req, res) => {
+  db.collection("StudentBatchInfo").aggregate([
+    {
+      "$lookup": {
+        "from": "Students",
+        "localField": "RollNo",
+        "foreignField": "RollNo",
+        "as": "StudentInfoTable"
+      }
+    },
+    { $unwind: "$StudentInfoTable" },
+    {
+      $match: {
+        $and: [{ "Year": req.body.Year }, { "Semester": req.body.Semester }, { "BatchID": req.body.BatchID }]
+      }
+    }
+  ]).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+//check it again
+app.post("/SaveWeeklyPreference", (req, res) => {
+  db.collection("StudentWeeklyPreference").find({ StudentRollNo: StudentRollNoglobal, Semester: req.body.Semester, CourseID: req.body.CourseID, Year: req.body.Year, BatchID: req.body.BatchID, Date: req.body.Date }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      if (result.length == 0) {
+        var data = {
+          'StudentRollNo': StudentRollNoglobal,
+          'Year': req.body.Year,
+          'BatchID': req.body.BatchID,
+          'Semester': req.body.Semester,
+          'Online': req.body.Online,
+          'CourseID': req.body.CourseID,
+          'Date': req.body.Date
+        };
+        db.collection("StudentWeeklyPreference").save(data, (err, result) => {
+          if (err) {
+            return console.log(err);
+          }
+          console.log("click added to db");
+          res.send([
+            {
+              message: "Request successfully logged",
+              status: true,
+            },
+          ]);
+        });
+      }
+      else {
+        res.send([{ status: false }]);
+      }
+    }
+  });
+});
+
+
+app.post('/getCoursesOfferedByYear', (req, res) => {
+  db.collection("CourseUndertaken").find({ Year: req.body.Year }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/getBatches', (req, res) => {
+  db.collection("BatchDetails").find({ Year: req.body.Year }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/AddExam', (req, res) => {
+  db.collection("ExamDetails").find({ Date: req.body.Date }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    else {
+      for (var x = 0; x < result.length; x++) {
+        if (req.body.Semester == result[0].Semester && ((req.body.StartTime < result[0].EndTime && req.body.StartTime > result[0].StartTime) || (req.body.EndTime < result[0].EndTime && req.body.EndTime > result[0].StartTime))) {
+          flag = true;
+          break;
+        }
+      }
+      if (flag == false) {
+        db.collection("ExamDetails").save(req.body, (err, result) => {
+          if (err) {
+            return console.log(err);
+          }
+          console.log("click added to db");
+          res.send([
+            {
+              message: "Request successfully logged",
+              status: true,
+            },
+          ]);
+        });
+      }
+      else {
+        res.send([
+          {
+            message: "Request Unsuccessful",
+            status: false,
+          },
+        ]);
+      }
+    }
+  });
+});
+
+app.post('/getStudentAttendance', (req, res) => {
+  db.collection("StudentAttendance").find({ Year: '2021', Semester: '6', BatchID: 'COE6', RollNo: '101803095' }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    var res1 = {};
+    for (var x = 0; x < result.length; x++) {
+      if (result[0].CourseID in res1) {
+        res1[result[0].CourseID] += 1;
+      }
+      else {
+        res1[result[0].CourseID] = 1;
+      }
+    }
+    db.collection("LectureScheduledHistory").find({ Year: '2021', Semester: '6', BatchID: 'COE6' }).toArray((err, result1) => {
+      if (err) {
+        res.send(err);
+      }
+      var res2 = {};
+      for (var x = 0; x < result1.length; x++) {
+        if (result1[0].CourseID in res2) {
+          res2[result1[0].CourseID + result[0]] += 1;
+        }
+        else {
+          res2[result1[0].CourseID] = 1;
+        }
+      }
+      var finalres = {};
+      for (x in res2) {
+        if (x in res1) {
+          finalres[x] = { 'Student': res1[x], 'Teacher': res2[x] };
+        }
+        else {
+          finalres[x] = { 'Student': 0, 'Teacher': res2[x] };
+        }
+      }
+      res.send([finalres]);
+    });
+  });
+})
+
+
+app.post('/getCoursesTaught', (req, res) => {
+  db.collection("CoursesTaughtByFaculty").find({ Year: req.body.Year, Semester: req.body.Semester, FacultyID: facultyIDglobal }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/getExamsforUpdate', (req, res) => {
+  db.collection("ExamDetails").find({ Year: req.body.Year, TeacherSem: req.body.TeacherSem, CourseID: req.body.CourseID }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post('/UpdateAnwserOnlineExam', (req, res) => {
+  db.collection("ExamDetails").find({ _id: new mongodb.ObjectId(req.body.examid) }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    if (result[0].Questions.length > parseInt(req.body.questionid) - 1) {
+      result[0].Questions[parseInt(req.body.questionid) - 1].correctAns = req.body.correctanswer;
+      db.collection("ExamDetails").save(result[0], (err, result2) => {
+        if (err) {
+          return console.log(err);
+        }
+        db.collection('StudentOnlineAnwers').find({ examID: req.body.examid }).toArray((err, result1) => {
+          if (err) {
+            return err;
+          }
+          for (var x = 0; x < result1.length; x++) {
+            var marks = 0;
+            for (var y = 0; y < result1[x].StudentAnswers.length; y++) {
+              if (result1[x].StudentAnswers[y].Ans == result[0].Questions[y].correctAns) {
+                marks += parseInt(result[0].Questions[y].marks);
+              }
+            }
+            result1[x].MarksObtained = marks.toString();
+          }
+          for(var x=0;x<result1.length;x++){
+            db.collection("StudentOnlineAnwers").save(result1[x], (err, result3) => {
+              if (err) {
+                return err;
+              }
+              if(x==result1.length-1){
+                return [{
+                  status: true,
+                  message: "Updated Successfully"
+                }];
+              }
+            });
+          }      
+        });
+      });
+    }
+  });
+});
+
+//checking
+app.post('/getUpcomingExams',(req,res)=>{
+  db.collection('ExamDetails').find({
+    $or:[
+      {BatchID:{$in:req.body.BatchID},CourseID:{$in:req.body.Courselist},Date:{$gt :req.body.Date}},
+      {BatchID:{$in:req.body.BatchID},CourseID:{$in:req.body.Courselist},Date:req.body.Date,'EndTime':{$gt:req.body.time}}
+    ]
+  }).toArray((err,result)=>{
+    if(err){
+      res.send(err);
+    }
+    res.send(result);
+  })
+})
+
+app.post('/getPastExamDetails',(req,res)=>{
+  db.collection('ExamDetails').find({
+    $or:[
+      {BatchID:{$in:req.body.BatchID},CourseID:{$in:req.body.Courselist},Date:{$lt :req.body.Date},Semester:req.body.Semester},
+      {BatchID:{$in:req.body.BatchID},CourseID:{$in:req.body.Courselist},Date:req.body.Date,'EndTime':{$lt:req.body.time},Semester:req.body.Semester}
+    ]
+  }).toArray((err,result)=>{
+    if(err){
+      res.send(err);
+    }
+    res.send(result);
+  })
+});
+
+app.post('/getStudentAnswers',(req,res)=>{
+  db.collection('StudentOnlineAnwers').find({ examID: req.body.examid }).toArray((err, result1) => {
+    if (err) {
+      return err;
+    }
+    res.send(result1);
+  });
+})

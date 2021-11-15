@@ -242,7 +242,6 @@
                     <span>Schedule a Coding Exam</span>
                 </a>
             </li>
-            
         </ul>
       
     </aside><!-- End Sidebar-->
@@ -262,69 +261,76 @@
 
         <section class="section">
             <div class="row">
-              
-
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Student Information</h5>
-                        <div class="row mb-3">
+                        <!-- <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Select Year</label>
                             <div class="col-sm-10">
                                 <select class="form-select" id="year" aria-label="Default select example">
                                     <option selected>Open this select menu</option>
-                                            <option value="2021">2021</option>
-                                            <option value="2020">2020</option>
-                                            <option value="2019">2019</option>
-                                            <option value="2018">2018</option>
-                                            <option value="2017">2017</option>
-                                            <option value="2016">2016</option>
-                                            <option value="2015">2015</option>
-                                            <option value="2014">2014</option>
-                                            <option value="2013">2013</option>
-                                            <option value="2012">2012</option>
-                                            <option value="2011">2011</option>
-                                            <option value="2010">2010</option>
-                                            <option value="2009">2009</option>
-                                            <option value="2008">2008</option>
-                                            <option value="2007">2007</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Select Odd or Even Semester (Odd-1 or Even-2)</label>
                             <div class="col-sm-10">
-                                <select class="form-select" id="TeacherSem" aria-label="Default select example">
+                                <select class="form-select" id="year" aria-label="Default select example">
                                     <option selected>Open this select menu</option>
-                                    <option value="1">1</option>
-                                    <option value="2">2</option>
                                 </select>
                             </div>
                         </div>
                             <div class="row mb-3">
                                 <label class="col-sm-2 col-form-label">Select Batch-Semester</label>
                                 <div class="col-sm-10">
-                                    <select class="form-select" id="BatchDetail" aria-label="Default select example">
+                                    <select class="form-select" id="year" aria-label="Default select example">
                                         <option selected>Open this select menu</option>
                                     </select>
                                 </div>
-                            </div>
+                            </div> -->
                         <!-- Table with stripped rows -->
-                        <table class="table table-bordered">
+                        <table class="table datatable">
                             <thead>
                                 <tr>
+                                    <th scope="col">#</th>
                                     <th scope="col">Student Roll Number</th>
                                     <th scope="col">Student Name</th>
                                     <th scope="col">Student Phone Number</th>
                                     <th scope="col">Student EmailID</th>
                                 </tr>
                             </thead>
-                            <tbody id="StudentDetail">
-                              
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td>Brandon Jacob</td>
+                                    <td>Designer</td>
+                                    <td><button class="btn btn-outline-success">Online</button></td>
+                                    <td><button class="btn btn-outline-success">Offline</button></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">2</th>
+                                    <td>Bridie Kessler</td>
+                                    <td>Developer</td>
+                                    
+                                    <td><button class="btn btn-outline-success">Online</button></td>
+                                    <td><button class="btn btn-outline-success">Offline</button></td>
+                                </tr>
+                                <tr>
+                                    <th scope="row">3</th>
+                                    <td>Ashleigh Langosh</td>
+                                    <td>Finance</td>
+                                    
+                                    <td><button class="btn btn-outline-success">Online</button></td>
+                                    <td><button class="btn btn-outline-success">Offline</button></td>
+                                </tr>
                             </tbody>
                         </table>
                         <!-- End Table with stripped rows -->
                     </div>
                 </div>
+            </div>
+            <div>
+
             </div>
         </section>
     </main>
@@ -344,80 +350,7 @@
 
     <!-- Template Main JS File -->
     <script src="/assets/js/main.js"></script>
-    <script>
-        document.getElementById('TeacherSem').onchange= function(){
-            var data={
-                'Year':document.getElementById('year').value,
-                'TeacherSem':document.getElementById('TeacherSem').value,
-            }
-            var parentdiv = document.getElementById('BatchDetail');
-            parentdiv.innerHTML="";
 
-            var optiondiv4 = document.createElement('option');
-            optiondiv4.value = "Open this Select Menu";
-            optiondiv4.textContent = "Open this Select Menu";
-            parentdiv.appendChild(optiondiv4);
-            mySet1=new Set();
-            
-            $.ajax({
-                type: "POST",
-                url: "/getAssignedBatches",
-                dataType: "json",
-                success: function (msg) {
-                    for(var x=0;x<msg.length;x++){
-                        str = msg[x].BatchID+','+msg[x].Semester;
-                        if(mySet1.has(str)==false){
-                            var optiondiv = document.createElement('option');
-                            optiondiv.value = msg[x].BatchID+','+msg[x].Semester;
-                            optiondiv.textContent = msg[x].BatchID+','+msg[x].Semester;
-                            parentdiv.appendChild(optiondiv);
-                            mySet1.add(str);
-                        }
-                    }
-                },
-                data:data
-            });
-        }
-
-        document.getElementById('BatchDetail').onchange = function(){
-            var parent = document.getElementById('StudentDetail');
-            parent.innerHTML="";
-            var data={
-                'Year':document.getElementById('year').value,
-                'BatchID':document.getElementById('BatchDetail').value.split(',')[0],
-                'Semester':document.getElementById('BatchDetail').value.split(',')[1]
-            }
-
-            $.ajax({
-                type: "POST",
-                url: "/getStudentsofBatch",
-                dataType: "json",
-                success: function (msg) {
-                    for(var x=0;x<msg.length;x++){
-                        var tr = document.createElement('tr');
-                        var th = document.createElement('th');
-                        var td1 = document.createElement('td');
-                        var td2 = document.createElement('td');
-                        var td3 = document.createElement('td');
-
-                        th.setAttribute('scope','row');
-                        th.textContent = msg[x].RollNo;
-                        td1.textContent = msg[x].StudentInfoTable.Name;
-                        td2.textContent = msg[x].StudentInfoTable.Phone;
-                        td3.textContent = msg[x].StudentInfoTable.Email;
-
-                        tr.appendChild(th);
-                        tr.appendChild(td1);
-                        tr.appendChild(td2);
-                        tr.appendChild(td3);
-
-                        parent.appendChild(tr);
-                    }
-                },
-                data:data
-            });
-        }
-    </script>
 </body>
 <script>
 </script>

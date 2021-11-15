@@ -194,11 +194,53 @@
     <aside id="sidebar" class="sidebar">
         <ul class="sidebar-nav" id="sidebar-nav">
             <li class="nav-item">
-                <a class="nav-link collapsed" href="index.html">
+                <a class="nav-link collapsed" href="/FacultyTimeTable">
                     <i class="bi bi-grid"></i>
-                    <span>Dashboard</span>
+                    <span>Faculty Time Table</span>
                 </a>
             </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Faculty_StudentInfo">
+                    <i class="bi bi-grid"></i>
+                    <span>Student Information</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/ScheduleNewExam">
+                    <i class="bi bi-grid"></i>
+                    <span>Schedule a MCQ Exam</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Faculty_RecheckRequests">
+                    <i class="bi bi-grid"></i>
+                    <span>Recheck Requests from Students</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
+            <li>
+                <a class="nav-link collapsed" href="/UploadCheckedAnswerSheets">
+                    <i class="bi bi-grid"></i>
+                    <span>Upload Checked Answer Sheets</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link collapsed" href="/UpdateAnwserOnlineExam">
+                    <i class="bi bi-grid"></i>
+                    <span>Update Answers for Online Examination</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link collapsed" href="/UpdateAnwserOnlineExam">
+                    <i class="bi bi-grid"></i>
+                    <span>Cancel a Lecture</span>
+                </a>
+            </li>
+            <li>
+                <a class="nav-link collapsed" href="/ScheduleCodingExam">
+                    <i class="bi bi-grid"></i>
+                    <span>Schedule a Coding Exam</span>
+                </a>
+            </li>
         </ul>
     </aside><!-- End Sidebar-->
 
@@ -221,30 +263,15 @@
                     <div class="card">
                         <div class="card-body" id="upComing">
                             <h4 class="card-title" style="font-size: 25px;">Upcoming Class</h4>
-                            <!-- <h5>CourseID - </h5>
-                            <h5>BatchID - </h5>
-                            <h5>Semester - </h5>
-                            <h5>TimeSlot - </h5>
-                            <br>
-                            <button type="button" class="btn btn-outline-danger">Cancel</button>
-                            <button type="button" class="btn btn-outline-success">Offline</button>
-                            <button type="button" class="btn btn-outline-info">Online</button> -->
                         </div>
-                    </div><!-- End Default Card -->
+                    </div>
                 </div>
                 <div class="col-lg-6">
                     <div class="card">
                         <div class="card-body" id="Present">
                             <h4 class="card-title" style="font-size: 25px;">Mark Atendance of the Present Class</h4>
-                            <!-- <h5>CourseID - </h5>
-                            <h5>BatchID - </h5>
-                            <h5>Semester - </h5>
-                            <h5>TimeSlot - </h5> -->
-                            <!-- <br>
-                            <button type="button" class="btn btn-outline-danger" id="markAttend">Mark
-                                Attendance</button> -->
                         </div>
-                    </div><!-- End Default Card -->
+                    </div>
                 </div>
             </div>
             </div>
@@ -424,7 +451,7 @@
 </body>
 <script>
     //Actual Implementation
-    // var dict1={"1":"Monday","2":"Tuesday","3":"Wednesday","4":"Thursday","5":"Friday","6":"Saturday","7":"Saturday"};
+    // var dict1={"1":"Monday","2":"Tuesday","3":"Wednesday","4":"Thursday","5":"Friday","6":"Saturday","7":"Sunday"};
     // const d = new Date();
     // var hour = d.getHours();
     // var day = dict1[d.getDay()];
@@ -451,8 +478,6 @@
     var TimeSlot = "No Class within 6 Hours";
 
     $(document).ready(function () {
-
-
         var data = {
             'day': day,
             'Year': year,

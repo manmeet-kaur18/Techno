@@ -23,14 +23,14 @@ button.addEventListener('click', function (e) {
   if (document.getElementById('option-1').checked) {
     var data = {
       'role': 'student',
-      'RollNo': document.getElementById('id').value,
+      'ID': document.getElementById('id').value,
       'password': document.getElementById('password').value,
     }
   }
   else if (document.getElementById('option-2').checked) {
     var data = {
       'role': 'faculty',
-      'FacultyID': document.getElementById('id').value,
+      'ID': document.getElementById('id').value,
       'password': document.getElementById('password').value,
     }
   }
