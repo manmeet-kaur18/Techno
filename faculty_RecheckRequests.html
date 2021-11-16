@@ -166,12 +166,6 @@
             font-size: 25px;
         }
     </style>
-    <!-- =======================================================
-  * Template Name: NiceAdmin - v2.1.0
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -242,12 +236,15 @@
                     <span>Schedule a Coding Exam</span>
                 </a>
             </li>
+            <li>
+                <a class="nav-link collapsed" href="/ScheduleOfflineExam">
+                    <i class="bi bi-grid"></i>
+                    <span>Schedule an Offline Written Exam</span>
+                </a>
+            </li>
         </ul>
-      
-    </aside><!-- End Sidebar-->
-
+    </aside>
     <main id="main" class="main">
-
         <div class="pagetitle">
             <h1>General Tables</h1>
             <nav>
@@ -257,81 +254,38 @@
                     <li class="breadcrumb-item active">General</li>
                 </ol>
             </nav>
-        </div><!-- End Page Title -->
-
+        </div>
         <section class="section">
             <div class="row">
-                <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Student Information</h5>
-                        <!-- <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label">Select Year</label>
-                            <div class="col-sm-10">
-                                <select class="form-select" id="year" aria-label="Default select example">
-                                    <option selected>Open this select menu</option>
-                                </select>
-                            </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="card-title">Recheck Requests</h5>
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">#</th>
+                                        <th scope="col">Student Roll Number</th>
+                                        <th scope="col">Student Name</th>
+                                        <th scope="col">Student Phone Number</th>
+                                        <th scope="col">Student EmailID</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="RecheckExams">
+                                </tbody>
+                            </table>
+                            <!-- End Table with stripped rows -->
                         </div>
-                        <div class="row mb-3">
-                            <label class="col-sm-2 col-form-label">Select Odd or Even Semester (Odd-1 or Even-2)</label>
-                            <div class="col-sm-10">
-                                <select class="form-select" id="year" aria-label="Default select example">
-                                    <option selected>Open this select menu</option>
-                                </select>
-                            </div>
-                        </div>
-                            <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label">Select Batch-Semester</label>
-                                <div class="col-sm-10">
-                                    <select class="form-select" id="year" aria-label="Default select example">
-                                        <option selected>Open this select menu</option>
-                                    </select>
-                                </div>
-                            </div> -->
-                        <!-- Table with stripped rows -->
-                        <table class="table datatable">
-                            <thead>
-                                <tr>
-                                    <th scope="col">#</th>
-                                    <th scope="col">Student Roll Number</th>
-                                    <th scope="col">Student Name</th>
-                                    <th scope="col">Student Phone Number</th>
-                                    <th scope="col">Student EmailID</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <th scope="row">1</th>
-                                    <td>Brandon Jacob</td>
-                                    <td>Designer</td>
-                                    <td><button class="btn btn-outline-success">Online</button></td>
-                                    <td><button class="btn btn-outline-success">Offline</button></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">2</th>
-                                    <td>Bridie Kessler</td>
-                                    <td>Developer</td>
-                                    
-                                    <td><button class="btn btn-outline-success">Online</button></td>
-                                    <td><button class="btn btn-outline-success">Offline</button></td>
-                                </tr>
-                                <tr>
-                                    <th scope="row">3</th>
-                                    <td>Ashleigh Langosh</td>
-                                    <td>Finance</td>
-                                    
-                                    <td><button class="btn btn-outline-success">Online</button></td>
-                                    <td><button class="btn btn-outline-success">Offline</button></td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <!-- End Table with stripped rows -->
                     </div>
                 </div>
-            </div>
-            <div>
-
-            </div>
+                <div class="col-lg-6">
+                    <div class="card">
+                        <div class="card-body" id="Review">
+                            <h5 class="card-title">Review Requests for Recheck of Answer Sheet</h5>
+                        </div>
+                    </div>
+                </div>
+                <div>
         </section>
     </main>
 
@@ -353,6 +307,120 @@
 
 </body>
 <script>
-</script>
+    $(document).ready(function () {
+        var parent = document.getElementById('RecheckExams');
+        parent.innerHTML = "";
+        $.ajax({
+            type: "POST",
+            url: "/getSheetstoRecheck",
+            dataType: "json",
+            success: function (msg) {
+                for (var x = 0; x < msg.length; x++) {
+                    var tr = document.createElement('tr');
+                    var th = document.createElement('th');
+                    th.setAttribute('class', 'align-middle');
+                    var td1 = document.createElement('td');
+                    td1.setAttribute('class', 'align-middle');
+                    var td2 = document.createElement('td');
+                    td2.setAttribute('class', 'align-middle');
+                    var td3 = document.createElement('td');
+                    td3.setAttribute('class', 'align-middle');
 
+                    th.setAttribute('scope', 'row');
+                    th.textContent = msg[x].rollNo;
+                    td1.textContent = msg[x].message;
+                    td2.textContent = msg[x].ExamInfo.examName;
+                    td3.textContent = msg[x].ExamInfo.CourseID;
+
+                    tr.appendChild(th);
+                    tr.appendChild(td1);
+                    tr.appendChild(td2);
+                    tr.appendChild(td3);
+
+                    var td5 = document.createElement('td');
+                    var button1 = document.createElement('button');
+
+                    button1.setAttribute('class', 'btn btn-outline-success');
+                    button1.textContent = "View";
+                    str = "ViewExam('" + msg[x].examID + "','" + msg[x].rollNo + "','" + msg[x].filename + "')";
+                    button1.setAttribute('onclick', str);
+
+                    td5.appendChild(button1);
+                    tr.appendChild(td5);
+                    parent.appendChild(tr);
+                }
+            }
+        });
+    })
+
+    function ViewExam(examID, studentRollNo, fileName) {
+        var parent = document.getElementById('Review');
+        parent.innerHTML = "";
+        var heading = document.createElement('h5');
+        heading.setAttribute('class', 'card-title');
+        heading.textContent = "Recheck Students Checked Answer Sheet";
+        parent.appendChild(heading);
+        var files = fileName.split(',')
+        for (var x = 0; x < files.length; x++) {
+            var a = document.createElement('a');
+            a.href = "/downloadfile/" + files[x];
+            a.setAttribute('class', 'link-primary');
+            a.textContent = "Click to view Answer Sheet " + x;
+            var br = document.createElement('br');
+            parent.appendChild(a);
+            parent.appendChild(br);
+        }
+
+        var br1 = document.createElement('br');
+        parent.appendChild(br1);
+
+        var div1 = document.createElement('div');
+        div1.setAttribute('class', 'row mb-3');
+        var label1 = document.createElement('label');
+        label1.for = "inputEmail";
+        label1.setAttribute('class', 'col-sm-2 col-form-label')
+        label1.textContent = "Marks Obtained if change needed";
+        var div2 = document.createElement('div');
+        div2.setAttribute('class', 'col-sm-10');
+        var input = document.createElement('input');
+        input.setAttribute('class', 'form-control');
+        input.id = "MarksObtained";
+
+        div2.appendChild(input);
+        div1.appendChild(label1);
+        div1.appendChild(div2);
+        parent.appendChild(div1);
+
+        var div3 = document.createElement('div');
+        div3.setAttribute('class', 'row mb-3');
+        var button = document.createElement('button');
+        button.setAttribute('class', 'btn btn-outline-success');
+        button.textContent = "Done";
+        var status = "done"
+        var str = "ChangeStatus('" + examID + "','" + status +"','"+studentRollNo +"')";
+        button.setAttribute('onclick', str);
+
+        div3.appendChild(button);
+        parent.appendChild(div3);
+    }
+    function ChangeStatus(examID, status, studentRollNo) {
+        var data = {
+            'MarksObtained': document.getElementById('MarksObtained').value,
+            'examid': examID,
+            'status': status,
+            'rollNo':studentRollNo
+        };
+        $.ajax({
+            type: "POST",
+            url: "/UpdateMarksStatusRecheck",
+            dataType: "json",
+            success: function (msg) {
+                if (msg.length > 0) {
+                    location.href = "/Faculty_RecheckRequests";
+                }
+            },
+            data: data
+        });
+    }
+</script>
 </html>

@@ -256,6 +256,7 @@
                                 'Courselist': courseslist,
                                 'BatchID': ["", stdBatch],
                                 'time': time,
+                                'Semester':stdSemester
                             }
                             $.ajax({
                                 type: "POST",
@@ -294,18 +295,26 @@
                                         var h5 = document.createElement('h8');
                                         var br5 = document.createElement('br');
                                         h5.textContent = "Total Marks - " + msg[x].TotalMarks;
-                                        var buttonnew = document.createElement('button');
-                                        buttonnew.setAttribute('class', 'btn btn-outline-success');
 
-                                        buttonnew.textContent = "Attempt Now";
-                                        if (msg[x].Date == todaydate && msg[x].StartTime < time && msg[x].EndTime > time) {
-                                            buttonnew.disabled = false;
+                                        if(msg[x].Type=="Coding" || msg[x].Type=="MCQ"){
+                                            var buttonnew = document.createElement('button');
+                                            buttonnew.setAttribute('class', 'btn btn-outline-success');
+
+                                            buttonnew.textContent = "Attempt Now";
+                                            if (msg[x].Date == todaydate && msg[x].StartTime < time && msg[x].EndTime > time) {
+                                                buttonnew.disabled = false;
+                                            }
+                                            else {
+                                                buttonnew.disabled = true;
+                                            }
+                                            var str = "AttemptExam('" + msg[x]._id + "','" + msg[x]._id + "')";
+                                            buttonnew.setAttribute('onclick', str);
                                         }
-                                        else {
-                                            buttonnew.disabled = true;
+                                        else{   
+                                            var h6 = document.createElement('h8');
+                                            var br6 = document.createElement('br');
+                                            h6.textContent = "Exam Location - " + msg[x].Location;
                                         }
-                                        var str = "AttemptExam('" + msg[x]._id + "','" + msg[x]._id + "')";
-                                        buttonnew.setAttribute('onclick', str);
                                         div1.appendChild(div2);
                                         div1.appendChild(h1);
                                         div1.appendChild(br1);
@@ -317,8 +326,14 @@
                                         div1.appendChild(br4);
                                         div1.appendChild(h5);
                                         div1.appendChild(br5);
+                                        if(msg[x].Type=="Written"){
+                                            div1.appendChild(h6);
+                                            div1.appendChild(br6);
+                                        }
                                         li.appendChild(div1);
-                                        li.appendChild(buttonnew);
+                                        if(msg[x].Type=="MCQ" || msg[x].Type=="Coding"){
+                                            li.appendChild(buttonnew);
+                                        }
                                         parent1.appendChild(li);
                                     }
                                 },

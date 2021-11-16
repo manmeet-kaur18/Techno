@@ -457,9 +457,7 @@
         maketimetable();
         // getUpcomingClass();
     })
-
-    function maketimetable() {
-        var dict1 = {
+    var dict1 = {
             "08:00-09:00": 1,
             "09:00-10:00": 2,
             "10:00-11:00": 3,
@@ -478,6 +476,9 @@
             "Thursday": 4,
             "Friday": 5,
         };
+
+    function maketimetable() {
+        
 
         var data = {
             'Year': year
@@ -628,14 +629,14 @@
                 for (var x = 0; x < msg.length; x++) {
                     var span = document.createElement('span');
                     span.setAttribute('class', 'bg-yellow padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16  xs-font-size13');
-                    span.textContent = msg[x].CourseID;
+                    span.textContent = msg[x].FacultyInfo.CourseID;
                     var div1 = document.createElement('div');
                     div1.setAttribute('class', 'margin-10px-top font-size14');
                     div1.textContent = 'Faculty ID : ' + msg[x].FacultyID;
                     var div2 = document.createElement('div');
-                    div2.textContent = msg[x].FacultyName;
+                    div2.textContent = msg[x].FacultyInfo.FacultyName;
                     var div3 = document.createElement('div');
-                    div3.textContent = msg[x].phone;
+                    div3.textContent = msg[x].FacultyInfo.phone;
 
                     var parentid = dict1[msg[x].TimeSlot].toString() + dict2[msg[x].Day].toString();
                     var parentdiv = document.getElementById(parentid);

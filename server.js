@@ -12,9 +12,124 @@ var axios = require('axios');
 const mongodb = require("mongodb");
 const MongoClient = require("mongodb").MongoClient;
 
+const path = require('path');
+const crypto = require('crypto');
+const mongoose = require('mongoose');
+const multer = require('multer');
+const { GridFsStorage } = require('multer-gridfs-storage');
+const Grid = require('gridfs-stream');
+const { abort } = require("process");
+const { addAbortSignal } = require("stream");
+
 // DB
 const mongoURI = "mongodb://ThaparUser:Pass123@cluster0-shard-00-00.jsaod.mongodb.net:27017,cluster0-shard-00-01.jsaod.mongodb.net:27017,cluster0-shard-00-02.jsaod.mongodb.net:27017/TechAcademy?ssl=true&replicaSet=atlas-1u2syf-shard-0&authSource=admin&retryWrites=true&w=majority";
 const url = "mongodb://ThaparUser:Pass123@cluster0-shard-00-00.jsaod.mongodb.net:27017,cluster0-shard-00-01.jsaod.mongodb.net:27017,cluster0-shard-00-02.jsaod.mongodb.net:27017/TechAcademy?ssl=true&replicaSet=atlas-1u2syf-shard-0&authSource=admin&retryWrites=true&w=majority";
+
+
+const conn = mongoose.createConnection(mongoURI);
+
+// Init gfs
+let gfs;
+
+conn.once('open', () => {
+  // Init stream
+  gfs = Grid(conn.db, mongoose.mongo);
+  gfs.collection('uploads');
+});
+
+// Create storage engine
+const storage = new GridFsStorage({
+  url: mongoURI,
+  file: (req, file) => {
+    return new Promise((resolve, reject) => {
+      crypto.randomBytes(16, (err, buf) => {
+        if (err) {
+          return reject(err);
+        }
+        const filename = buf.toString('hex') + path.extname(file.originalname);
+        const fileInfo = {
+          filename: filename,
+          bucketName: 'uploads'
+        };
+        resolve(fileInfo);
+      });
+    });
+  }
+});
+const upload = multer({ storage });
+app.get('/uploadAnswers', (req, res) => {
+  res.sendFile(__dirname + "/index1.html");
+});
+
+
+app.post('/upload', upload.single('image'), (req, res, next) => {
+  var data = {
+    filename: req.file.filename,
+    examID: req.body.ExamID,
+    rollNo: req.body.rollNo,
+    status: "checked",
+    FacultyID: facultyIDglobal,
+    MarksObtained: req.body.MarksObtained,
+    message: ""
+  }
+  db.collection("Admin").find({ adminID: req.body.adminID, password: req.body.password }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    var finaldata = data;
+    if (result.length != 0) {
+      result[0].filedname = result[0].filename + ',' + data.filename;
+      finaldata = result[0];
+    }
+    db.collection('StudentAnswerSheetInfo').save(finaldata, (err, result) => {
+      if (err) {
+        res.send(err);
+      }
+      else {
+        res.redirect('/UploadCheckedAnswerSheets')
+      }
+    });
+  });
+
+  // console.log(obj);
+  // gfs.files.findOne({filename: req.file.filename}).toArray((err,result)=>{
+  //   if(err){
+  //     res.send(err);
+  //   }
+  //   console.log(result);
+  // })
+  // imgModel.create(obj, (err, item) => {
+  //     if (err) {
+  //         console.log(err);
+  //     }
+  //     else {
+  //         // item.save();
+  //         res.redirect('/');
+  //     }
+  // });
+});
+
+app.get('/downloadFile/:filename', (req, res) => {
+  gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
+    // Check if file
+    if (!file || file.length === 0) {
+      return res.status(404).json({
+        err: 'No file exists'
+      });
+    }
+
+    // Check if image
+    if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+      // Read output to browser
+      const readstream = gfs.createReadStream(file.filename);
+      readstream.pipe(res);
+    } else {
+      res.status(404).json({
+        err: 'Not an image'
+      });
+    }
+  });
+});
 
 // ALL THE GLOBAL VARIABLES WHICH WILL REMAIN CONSTANT THROUGHTOUT THE SESSION OF A USER
 var facultyIDglobal;
@@ -130,6 +245,10 @@ app.get("/ScheduleCodingExam", (req, res) => {
 app.get("/UpdateAnwserOnlineExam", (req, res) => {
   res.sendFile(__dirname + "/Faculty_UpdateAnwer.html");
 })
+
+app.get("/ScheduleOfflineExam", (req, res) => {
+  res.sendFile(__dirname + "/Faculty_AddOfflineExam.html");
+})
 app.post("/execute", (req, res) => {
   console.log(req.body);
   var data = JSON.stringify(req.body);
@@ -159,10 +278,10 @@ app.post("/signin", (req, res) => {
       if (err) {
         res.send(err);
       }
-      if(result.length==0){
+      if (result.length == 0) {
         res.send([]);
       }
-      else{
+      else {
         facultyIDglobal = result[0].FacultyID;
         res.send(result);
       }
@@ -173,11 +292,11 @@ app.post("/signin", (req, res) => {
       if (err) {
         res.send(err);
       }
-      if(result.length==0){
+      if (result.length == 0) {
         res.send([]);
       }
-      else{
-      StudentRollNoglobal = result[0].RollNo;
+      else {
+        StudentRollNoglobal = result[0].RollNo;
         res.send(result);
       }
     });
@@ -707,17 +826,6 @@ app.post('/getStudentTimeTable', (req, res) => {
         $and: [{ "Year": req.body.Year }, { "BatchID": req.body.BatchID }, { "Semester": req.body.Semester }, { "TeacherSem": req.body.TeacherSem }]
       }
     },
-    // {
-    //   $project: {
-    //     CourseID: "$LectureSchedule.CourseID",
-    //     FacultyID: "$FacultyInfo.FacultyID",
-    //     FacultyName:"$FacultyInfo.FacultyName",
-    //     phone:"$FacultyInfo.phone",
-    //     email:"$FacultyInfo.email",
-    //     TimeSlot:"$LectureSchedule.TimeSlot",
-    //     Day:"$LectureSchedule.Day"
-    //   }
-    // }
   ]).toArray((err, result) => {
     if (err) {
       res.send(err);
@@ -887,19 +995,26 @@ app.post('/getBatches', (req, res) => {
 });
 
 app.post('/AddExam', (req, res) => {
-  db.collection("ExamDetails").find({ Date: req.body.Date }).toArray((err, result) => {
+  db.collection("ExamDetails").find({ Date: req.body.data[req.body.data.length - 1].Date, CourseID: { $in: req.body.data[req.body.data.length - 1].CourseList }, 'BatchID': { $in: req.body.data[req.body.data.length - 1].BatchList }, 'Semester': req.body.data[req.body.data.length - 1].Semester }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
     else {
+      var t = req.body.data.pop();
+      var flag = false;
       for (var x = 0; x < result.length; x++) {
-        if (req.body.Semester == result[0].Semester && ((req.body.StartTime < result[0].EndTime && req.body.StartTime > result[0].StartTime) || (req.body.EndTime < result[0].EndTime && req.body.EndTime > result[0].StartTime))) {
-          flag = true;
+        for (var y = 0; y < req.body.data.length; y++) {
+          if ((req.body.data[y].StartTime < result[0].EndTime && req.body.data[y].StartTime > result[0].StartTime) || (req.body.data[y].EndTime < result[0].EndTime && req.body.data[y].EndTime > result[0].StartTime)) {
+            flag = true;
+            break;
+          }
+        }
+        if (flag == true) {
           break;
         }
       }
       if (flag == false) {
-        db.collection("ExamDetails").save(req.body, (err, result) => {
+        db.collection("ExamDetails").insert(req.body.data, (err, result) => {
           if (err) {
             return console.log(err);
           }
@@ -1010,19 +1125,19 @@ app.post('/UpdateAnwserOnlineExam', (req, res) => {
             }
             result1[x].MarksObtained = marks.toString();
           }
-          for(var x=0;x<result1.length;x++){
+          for (var x = 0; x < result1.length; x++) {
             db.collection("StudentOnlineAnwers").save(result1[x], (err, result3) => {
               if (err) {
                 return err;
               }
-              if(x==result1.length-1){
+              if (x == result1.length - 1) {
                 return [{
                   status: true,
                   message: "Updated Successfully"
                 }];
               }
             });
-          }      
+          }
         });
       });
     }
@@ -1030,35 +1145,35 @@ app.post('/UpdateAnwserOnlineExam', (req, res) => {
 });
 
 //checking
-app.post('/getUpcomingExams',(req,res)=>{
+app.post('/getUpcomingExams', (req, res) => {
   db.collection('ExamDetails').find({
-    $or:[
-      {BatchID:{$in:req.body.BatchID},CourseID:{$in:req.body.Courselist},Date:{$gt :req.body.Date}},
-      {BatchID:{$in:req.body.BatchID},CourseID:{$in:req.body.Courselist},Date:req.body.Date,'EndTime':{$gt:req.body.time}}
+    $or: [
+      { BatchID: { $in: req.body.BatchID }, CourseID: { $in: req.body.Courselist }, Date: { $gt: req.body.Date }, Semester: req.body.Semester },
+      { BatchID: { $in: req.body.BatchID }, CourseID: { $in: req.body.Courselist }, Date: req.body.Date, 'EndTime': { $gt: req.body.time }, Semester: req.body.Semester }
     ]
-  }).toArray((err,result)=>{
-    if(err){
+  }).toArray((err, result) => {
+    if (err) {
       res.send(err);
     }
     res.send(result);
   })
 })
 
-app.post('/getPastExamDetails',(req,res)=>{
+app.post('/getPastExamDetails', (req, res) => {
   db.collection('ExamDetails').find({
-    $or:[
-      {BatchID:{$in:req.body.BatchID},CourseID:{$in:req.body.Courselist},Date:{$lt :req.body.Date},Semester:req.body.Semester},
-      {BatchID:{$in:req.body.BatchID},CourseID:{$in:req.body.Courselist},Date:req.body.Date,'EndTime':{$lt:req.body.time},Semester:req.body.Semester}
+    $or: [
+      { BatchID: { $in: req.body.BatchID }, CourseID: { $in: req.body.Courselist }, Date: { $lt: req.body.Date }, Semester: req.body.Semester },
+      { BatchID: { $in: req.body.BatchID }, CourseID: { $in: req.body.Courselist }, Date: req.body.Date, 'EndTime': { $lt: req.body.time }, Semester: req.body.Semester }
     ]
-  }).toArray((err,result)=>{
-    if(err){
+  }).toArray((err, result) => {
+    if (err) {
       res.send(err);
     }
     res.send(result);
   })
 });
 
-app.post('/getStudentAnswers',(req,res)=>{
+app.post('/getStudentAnswers', (req, res) => {
   db.collection('StudentOnlineAnwers').find({ examID: req.body.examid }).toArray((err, result1) => {
     if (err) {
       return err;
@@ -1066,3 +1181,105 @@ app.post('/getStudentAnswers',(req,res)=>{
     res.send(result1);
   });
 })
+
+app.post('/getStudentsCheckedExams', (req, res) => {
+  db.collection("StudentAnswerSheetInfo").aggregate([
+    {
+      "$lookup": {
+        "let": { "userObjId": { "$toObjectId": "$examID" } },
+        "from": "ExamDetails",
+        "pipeline": [
+          { "$match": { "$expr": { "$eq": ["$_id", "$$userObjId"] } } }
+        ],
+        "as": "ExamInfo"
+      }
+    },
+    { $unwind: "$ExamInfo" },
+    {
+      $match: {
+        $and: [{ "rollNo": StudentRollNoglobal }]
+      }
+    },
+  ]).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+})
+
+app.post("/UpdateStatusofAnswerSheet", (req, res) => {
+  db.collection("StudentAnswerSheetInfo").find({ rollNo: StudentRollNoglobal, examID: req.body.examid }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    result[0].status = req.body.status;
+    result[0].message = req.body.message;
+
+    db.collection("StudentAnswerSheetInfo").save(result[0], (err, result) => {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("click added to db");
+      res.send([
+        {
+          message: "Request successfully logged",
+          status: true,
+        },
+      ]);
+    })
+  });
+});
+
+app.post('/getSheetstoRecheck', (req, res) => {
+  db.collection("StudentAnswerSheetInfo").aggregate([
+    {
+      "$lookup": {
+        "let": { "userObjId": { "$toObjectId": "$examID" } },
+        "from": "ExamDetails",
+        "pipeline": [
+          { "$match": { "$expr": { "$eq": ["$_id", "$$userObjId"] } } }
+        ],
+        "as": "ExamInfo"
+      }
+    },
+    { $unwind: "$ExamInfo" },
+    {
+      $match: {
+        $and: [{ "FacultyID": facultyIDglobal,"status":"recheck" }]
+      }
+    },
+  ]).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+})
+
+app.post("/UpdateMarksStatusRecheck", (req, res) => {
+  db.collection("StudentAnswerSheetInfo").find({ rollNo: req.body.rollNo, examID: req.body.examid }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    result[0].status = req.body.status;
+    if(req.body.MarksObtained != ""){
+      result[0].MarksObtained = req.body.MarksObtained;
+    }
+    db.collection("StudentAnswerSheetInfo").save(result[0], (err, result) => {
+      if (err) {
+        return console.log(err);
+      }
+      console.log("click added to db");
+      res.send([
+        {
+          message: "Request successfully logged",
+          status: true,
+        },
+      ]);
+    })
+  });
+});
+

@@ -242,8 +242,14 @@
                     <span>Schedule a Coding Exam</span>
                 </a>
             </li>
+            <li>
+                <a class="nav-link collapsed" href="/ScheduleOfflineExam">
+                    <i class="bi bi-grid"></i>
+                    <span>Schedule an Offline Written Exam</span>
+                </a>
+            </li>
         </ul>
-      
+
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
@@ -261,36 +267,80 @@
 
         <section class="section">
             <div class="row">
-              
-
                 <div class="card">
-                    <div class="card-body">
-                        <h5 class="card-title">Student Information</h5>
+                    <form class="card-body" action="/upload" method="POST" enctype="multipart/form-data">
+                        <h5 class="card-title">Upload Checked Answer Sheets</h5>
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Select Year</label>
                             <div class="col-sm-10">
-                                <select class="form-select" id="year" aria-label="Default select example">
+                                <select class="form-select" id="year" name="Year" aria-label="Default select example">
                                     <option selected>Open this select menu</option>
+                                    <option value="2021">2021</option>
+                                    <option value="2020">2020</option>
+                                    <option value="2019">2019</option>
+                                    <option value="2018">2018</option>
+                                    <option value="2017">2017</option>
+                                    <option value="2016">2016</option>
+                                    <option value="2015">2015</option>
+                                    <option value="2014">2014</option>
+                                    <option value="2013">2013</option>
+                                    <option value="2012">2012</option>
+                                    <option value="2011">2011</option>
+                                    <option value="2010">2010</option>
+                                    <option value="2009">2009</option>
+                                    <option value="2008">2008</option>
+                                    <option value="2007">2007</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Select Odd or Even Semester (Odd-1 or Even-2)</label>
                             <div class="col-sm-10">
-                                <select class="form-select" id="year" aria-label="Default select example">
+                                <select class="form-select" id="TeacherSem" name="TeacherSem" aria-label="Default select example">
                                     <option selected>Open this select menu</option>
+                                    <option value="1">1</option>
+                                    <option value="2">2</option>
                                 </select>
                             </div>
                         </div>
-                            <div class="row mb-3">
-                                <label class="col-sm-2 col-form-label">Select Batch-Semester</label>
-                                <div class="col-sm-10">
-                                    <select class="form-select" id="year" aria-label="Default select example">
-                                        <option selected>Open this select menu</option>
-                                    </select>
-                                </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Select CourseID</label>
+                            <div class="col-sm-10">
+                                <select class="form-select" id="CourseID" name="CourseID" aria-label="Default select example">
+                                </select>
                             </div>
-                    </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Enter Roll No of Student</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="rollNo" name="rollNo">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Enter Marks Obtained by the Student</label>
+                            <div class="col-sm-10">
+                                <input type="text" class="form-control" id="MarksObtained" name="MarksObtained">
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label">Choose Exam Name</label>
+                            <div class="col-sm-10">
+                                <select class="form-select" name="ExamID" id="ExamID" aria-label="Default select example">
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <label class="col-sm-2 col-form-label" for="image">Upload Image</label>
+                            <div class="col-sm-10">
+                                <input type="file" id="image" name="image" value="" required>
+                            </div>
+                        </div>
+                        <div class="row mb-3">
+                            <div class="col-sm-10">
+                                <button class="btn btn-outline-success" type="submit">Submit</button>
+                            </div>
+                        </div>
+                    </form>
                 </div>
             </div>
         </section>
@@ -314,6 +364,63 @@
 
 </body>
 <script>
+      document.getElementById('TeacherSem').onchange = function () {
+            data={
+                'Year':document.getElementById('year').value,
+                'Semester':document.getElementById('TeacherSem').value
+            }
+            var parent = document.getElementById('CourseID');
+            parent.innerHTML="";
+            $.ajax({
+                type: "POST",
+                url: "/getCoursesTaught",
+                dataType: "json",
+                success: function (msg) {
+                    parent.innerHTML = "";
+                    var optiondiv2 = document.createElement('option');
+                    optiondiv2.value = "Open this Select Menu";
+                    optiondiv2.textContent = "Open this Select Menu";
+                    parent.appendChild(optiondiv2);
+                    for (var x = 0; x < msg.length; x++) {
+                        var optiondiv = document.createElement('option');
+                        optiondiv.value = msg[x].CourseID;
+                        optiondiv.textContent = msg[x].CourseID;
+                        parent.appendChild(optiondiv);
+                    }
+                },
+                data: data
+            });
+        }
+        document.getElementById('CourseID').onchange = function () {
+            data={
+                'Year':document.getElementById('year').value,
+                'TeacherSem':document.getElementById('TeacherSem').value,
+                'CourseID':document.getElementById('CourseID').value
+            }
+            var parent = document.getElementById('ExamID');
+            parent.innerHTML="";
+            $.ajax({
+                type: "POST",
+                url: "/getExamsforUpdate",
+                dataType: "json",
+                success: function (msg) {
+                    parent.innerHTML = "";
+                    var optiondiv2 = document.createElement('option');
+                    optiondiv2.value = "Open this Select Menu";
+                    optiondiv2.textContent = "Open this Select Menu";
+                    parent.appendChild(optiondiv2);
+                    for (var x = 0; x < msg.length; x++) {
+                        if(msg[x].Type=="Written"){
+                            var optiondiv = document.createElement('option');
+                            optiondiv.value = msg[x]._id;
+                            optiondiv.textContent = msg[x].examName;
+                            parent.appendChild(optiondiv);
+                        }
+                    }
+                },
+                data: data
+            });
+        }
 </script>
 
 </html>
