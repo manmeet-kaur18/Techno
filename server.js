@@ -20,6 +20,8 @@ const { GridFsStorage } = require('multer-gridfs-storage');
 const Grid = require('gridfs-stream');
 const { abort } = require("process");
 const { addAbortSignal } = require("stream");
+const e = require("express");
+const { resolveSoa } = require("dns");
 
 // DB
 const mongoURI = "mongodb://ThaparUser:Pass123@cluster0-shard-00-00.jsaod.mongodb.net:27017,cluster0-shard-00-01.jsaod.mongodb.net:27017,cluster0-shard-00-02.jsaod.mongodb.net:27017/TechAcademy?ssl=true&replicaSet=atlas-1u2syf-shard-0&authSource=admin&retryWrites=true&w=majority";
@@ -133,6 +135,7 @@ app.get('/downloadFile/:filename', (req, res) => {
 
 // ALL THE GLOBAL VARIABLES WHICH WILL REMAIN CONSTANT THROUGHTOUT THE SESSION OF A USER
 var facultyIDglobal;
+var examIDglobal;
 var StudentRollNoglobal;
 
 let db;
@@ -169,27 +172,29 @@ app.get("/exams", (req, res) => {
 
 
 app.get("/mcq", (req, res) => {
+  examIDglobal = req.params.examid;
   res.sendFile(__dirname + "/MCQExam.html");
 });
 
 
-app.get("/coding", (req, res) => {
-  res.sendFile(__dirname + "/CodingExam.html");
+app.get("/coding/:examid", (req, res) => {
+  examIDglobal = req.params.examid;
+  db.collection('StudentOnlineAnwers').find({ examID: examIDglobal, RollNo: StudentRollNoglobal }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    if (result.length > 0) {
+      res.sendFile(__dirname + "/SubmittedMessage.html");
+    }
+    else {
+      res.sendFile(__dirname + "/CodingExam.html");
+    }
+  })
 });
-
-
-// app.get("/ClassList", (req, res) => {
-//   res.sendFile(__dirname + "/faculty_ClassList.html");
-// });
-
 
 app.get("/studentList", (req, res) => {
   res.sendFile(__dirname + "/faculty_StudentList.html");
 });
-
-// app.get("/schedule", (req, res) => {
-//   res.sendFile(__dirname + "/faculty_classSchedule.html");
-// })
 
 app.get("/adminHome", (req, res) => {
   res.sendFile(__dirname + "/adminhome.html");
@@ -249,6 +254,11 @@ app.get("/UpdateAnwserOnlineExam", (req, res) => {
 app.get("/ScheduleOfflineExam", (req, res) => {
   res.sendFile(__dirname + "/Faculty_AddOfflineExam.html");
 })
+
+app.get("/submittedMessage", (req, res) => (req, res) => {
+  res.sendFile(_dirname, "/SubmittedMessage.html");
+})
+
 app.post("/execute", (req, res) => {
   console.log(req.body);
   var data = JSON.stringify(req.body);
@@ -1117,27 +1127,60 @@ app.post('/UpdateAnwserOnlineExam', (req, res) => {
             return err;
           }
           for (var x = 0; x < result1.length; x++) {
-            var marks = 0;
-            for (var y = 0; y < result1[x].StudentAnswers.length; y++) {
-              if (result1[x].StudentAnswers[y].Ans == result[0].Questions[y].correctAns) {
-                marks += parseInt(result[0].Questions[y].marks);
+            var ans = result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].Ans
+            var correctansnew = req.body.correctanswer;
+
+            var array = ans.split(',');
+            var array1 = correctansnew.split(',');
+
+            var set = new Set();
+
+            for (var y = 0; y < array1.length; y++) {
+              set.add(array1[y]);
+            }
+            var correctno = 0;
+            for (var y = 0; y < array.length; y++) {
+              if (set.has(array[y]) == true) {
+                correctno += 1;
               }
             }
-            result1[x].MarksObtained = marks.toString();
+            var wrong = array.length - correctno;
+            var newmarks = (correctno / array1.length) * (parseInt(result[0].Questions[parseInt(req.body.questionid) - 1].marks))
+            newmarks = newmarks - wrong * 0.5;
+
+            var oldmarks = parseInt(result1[x].MarksObtained);
+            oldmarks = oldmarks - (parseInt(result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].marks));
+            newtotalmarks = oldmarks + newmarks;
+            result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].marks=newmarks.toString();
+            result1[x].MarksObtained = newtotalmarks.toString();
           }
+          let promises = [];
           for (var x = 0; x < result1.length; x++) {
-            db.collection("StudentOnlineAnwers").save(result1[x], (err, result3) => {
-              if (err) {
-                return err;
-              }
+            promises.push(db.collection("StudentOnlineAnwers").save(result1[x]));
+            // db.collection("StudentOnlineAnwers").save(result1[x], (err, result3) => {
+            //   if (err) {
+            //     res.send(err);
+            //   }
+            //   if (x == result1.length) {
+            //     res.send[{
+            //       status: true,
+            //       message: "Updated Successfully"
+            //     }];
+            //   }
+            // });
+          }
+          var x = 0;
+          Promise.all(promises).then(function (results) {
+            results.forEach(function (response) {
               if (x == result1.length - 1) {
-                return [{
+                res.send([{
                   status: true,
                   message: "Updated Successfully"
-                }];
+                }]);
               }
+              x += 1;
             });
-          }
+          });
         });
       });
     }
@@ -1247,7 +1290,7 @@ app.post('/getSheetstoRecheck', (req, res) => {
     { $unwind: "$ExamInfo" },
     {
       $match: {
-        $and: [{ "FacultyID": facultyIDglobal,"status":"recheck" }]
+        $and: [{ "FacultyID": facultyIDglobal, "status": "recheck" }]
       }
     },
   ]).toArray((err, result) => {
@@ -1265,7 +1308,7 @@ app.post("/UpdateMarksStatusRecheck", (req, res) => {
       res.send(err);
     }
     result[0].status = req.body.status;
-    if(req.body.MarksObtained != ""){
+    if (req.body.MarksObtained != "") {
       result[0].MarksObtained = req.body.MarksObtained;
     }
     db.collection("StudentAnswerSheetInfo").save(result[0], (err, result) => {
@@ -1283,3 +1326,160 @@ app.post("/UpdateMarksStatusRecheck", (req, res) => {
   });
 });
 
+var sampletestcasesoutputglobal = {};
+var sampletestcaseinputglobal = {};
+var testcasesinputglobal = {};
+var testcasesoutputglobal = {};
+
+app.post('/getCodingExamDetails', (req, res) => {
+  db.collection("ExamDetails").find({ _id: mongodb.ObjectId(examIDglobal) }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      for (var x = 0; x < result[0].Questions.length; x++) {
+        testcasesinputglobal[result[0].Questions[x].questionid] = result[0].Questions[x].inputs;
+        result[0].Questions[x].inputs = "";
+        testcasesoutputglobal[result[0].Questions[x].questionid] = result[0].Questions[x].outputs;
+        result[0].Questions[x].outputs = "";
+        sampletestcaseinputglobal[result[0].Questions[x].questionid] = result[0].Questions[x].stcinput;
+        sampletestcasesoutputglobal[result[0].Questions[x].questionid] = result[0].Questions[x].stcoutput;
+      }
+      res.send(result);
+    }
+  });
+});
+
+app.post('/getSampleTestcaseResult', (req, res) => {
+  var testcasestocheck = sampletestcaseinputglobal[req.body.questionid];
+  var Arrayinput = testcasestocheck.split('],[');
+  Arrayinput[0] = Arrayinput[0].replace("[[", "");
+  Arrayinput[Arrayinput.length - 1] = Arrayinput[Arrayinput.length - 1].replace("]]", "");
+  testcasestocheck = sampletestcasesoutputglobal[req.body.questionid];
+  var Arrayoutput = testcasestocheck.split('],[');
+  Arrayoutput[0] = Arrayoutput[0].replace("[[", "");
+  Arrayoutput[Arrayoutput.length - 1] = Arrayoutput[Arrayoutput.length - 1].replace("]]", "");
+
+  var result = {
+    Testcases: []
+  };
+
+  let promises = []
+  for (var x = 0; x < Arrayinput.length; x++) {
+    var str1 = Arrayinput[x].replace(/,/g, "\n");
+    var str2 = Arrayoutput[x].replace(/,/g, "\n");
+    var data = JSON.stringify({
+      "code": req.body.code,
+      "language": req.body.language,
+      "input": str1
+    });
+    var config = {
+      method: 'post',
+      url: 'https://codexweb.netlify.app/.netlify/functions/enforceCode',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+    promises.push(axios(config));
+  }
+  var count = 0;
+  Promise.all(promises).then(function (results) {
+    results.forEach(function (response) {
+      var str2 = Arrayoutput[count].replace(/,/g, "\n");
+      str2 += "\n";
+      if (response.data.output == str2) {
+        result.Testcases.push({ status: "Accepted" });
+      }
+      else {
+        result.Testcases.push({ status: response.data.output });
+      }
+      count += 1;
+      if (count == Arrayinput.length) {
+        res.send([result]);
+      }
+    });
+  });
+});
+
+
+
+app.post('/getTestcaseResult', (req, res) => {
+
+  var testcasestocheck = testcasesinputglobal[req.body.questionid];
+  var Arrayinput = testcasestocheck.split('],[');
+  Arrayinput[0] = Arrayinput[0].replace("[[", "");
+  Arrayinput[Arrayinput.length - 1] = Arrayinput[Arrayinput.length - 1].replace("]]", "");
+  testcasestocheck = testcasesoutputglobal[req.body.questionid];
+  var Arrayoutput = testcasestocheck.split('],[');
+  Arrayoutput[0] = Arrayoutput[0].replace("[[", "");
+  Arrayoutput[Arrayoutput.length - 1] = Arrayoutput[Arrayoutput.length - 1].replace("]]", "");
+
+  var result = {
+    Testcases: [],
+    marks: "0"
+  };
+
+  let promises = []
+  for (var x = 0; x < Arrayinput.length; x++) {
+    var str1 = Arrayinput[x].replace(/,/g, "\n");
+    var str2 = Arrayoutput[x].replace(/,/g, "\n");
+    var data = JSON.stringify({
+      "code": req.body.code,
+      "language": req.body.language,
+      "input": str1
+    });
+    var config = {
+      method: 'post',
+      url: 'https://codexweb.netlify.app/.netlify/functions/enforceCode',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      data: data
+    };
+    promises.push(axios(config));
+  }
+  var count = 0;
+  var passed = 0;
+
+  Promise.all(promises).then(function (results) {
+    results.forEach(function (response) {
+      var str2 = Arrayoutput[count].replace(/,/g, "\n");
+      str2 += "\n";
+      if (response.data.output == str2) {
+        passed += 1;
+        result.Testcases.push({ status: "Accepted" });
+      }
+      else {
+        result.Testcases.push({ status: response.data.output });
+      }
+      count += 1;
+      if (count == Arrayinput.length) {
+        result.marks = ((parseInt(req.body.marks) * (passed)) / count).toString();
+        res.send([result]);
+      }
+    });
+  });
+});
+
+
+
+app.post("/SubmitTest", (req, res) => {
+  var data = {
+    examID: examIDglobal,
+    RollNo: StudentRollNoglobal,
+    StudentAnswers: req.body.StudentAnswers,
+    MarksObtained: req.body.totalmarks
+  }
+  db.collection("StudentOnlineAnwers").save(data, (err, result) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("click added to db");
+    res.send([
+      {
+        message: "Request successfully logged",
+        status: true,
+      },
+    ]);
+  });
+});

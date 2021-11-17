@@ -198,8 +198,9 @@
 <script>
     var d = new Date();
     var month = d.getMonth();
+    month = (parseInt(month)+1).toString();
     var sem = 1;
-    if ((parseInt(month) + 1) > 6) {
+    if (parseInt(month) > 6) {
         sem = 2;
     }
 
@@ -254,7 +255,7 @@
                             var data3 = {
                                 'Date': todaydate,
                                 'Courselist': courseslist,
-                                'BatchID': ["", stdBatch],
+                                'BatchID': [stdBatch],
                                 'time': time,
                                 'Semester':stdSemester
                             }
@@ -307,7 +308,7 @@
                                             else {
                                                 buttonnew.disabled = true;
                                             }
-                                            var str = "AttemptExam('" + msg[x]._id + "','" + msg[x]._id + "')";
+                                            var str = "AttemptExam('" + msg[x].Type + "','" + msg[x]._id + "')";
                                             buttonnew.setAttribute('onclick', str);
                                         }
                                         else{   
@@ -347,11 +348,9 @@
             data: data1
         });
     });
-
     function AttemptExam(type, examid) {
-        location.href = '/' + type;
+        location.href = '/'+type+'/'+examid;
     }
-
     document.getElementById('year').onchange = function () {
         var year = document.getElementById('year').value;
         var optiondiv = document.createElement('option');
