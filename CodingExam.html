@@ -207,6 +207,9 @@
                         if (distance < 0) {
                             clearInterval(x);
                             document.getElementById("demo").innerHTML = "EXPIRED";
+
+                            var buttn = document.getElementById("submit");
+                            buttn.disabled = true;
                         }
                     }, 1000);
                     var div1 = document.createElement('div');
@@ -465,7 +468,7 @@
         for(var x=0;x<totalQuestion;x++){
             var t1={
                 'questionid':(x+1).toString(),
-                'answer':document.getElementById('answer'+(x+1).toString()).value,
+                'Ans':document.getElementById('answer'+(x+1).toString()).value,
                 'marks':parseInt(document.getElementById('MarksObtained'+(x+1).toString()).textContent.split(':')[1]).toString()
             };
             totalmarks = totalmarks + parseInt(document.getElementById('MarksObtained1').textContent.split(':')[1]);

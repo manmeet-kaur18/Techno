@@ -257,7 +257,13 @@
     var stdSemester = "";
     var h = d.getHours();
     var s = d.getMinutes();
-    var time = h + ":" + s;
+    var time = "";
+    if(h<10){
+        time="0"+h+":"+s;
+    }
+    else{
+        time = h + ":" + s;
+    }
     var dict1 = {};
 
     $(document).ready(function () {

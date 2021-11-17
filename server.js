@@ -171,9 +171,19 @@ app.get("/exams", (req, res) => {
 
 
 
-app.get("/mcq", (req, res) => {
+app.get("/mcq/:examid", (req, res) => {
   examIDglobal = req.params.examid;
-  res.sendFile(__dirname + "/MCQExam.html");
+  db.collection('StudentOnlineAnwers').find({ examID: examIDglobal, RollNo: StudentRollNoglobal }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    if (result.length > 0) {
+      res.sendFile(__dirname + "/SubmittedMessage.html");
+    }
+    else {
+      res.sendFile(__dirname + "/MCQExam.html");
+    }
+  })
 });
 
 
@@ -1136,11 +1146,11 @@ app.post('/UpdateAnwserOnlineExam', (req, res) => {
             var set = new Set();
 
             for (var y = 0; y < array1.length; y++) {
-              set.add(array1[y]);
+              set.add(array1[y].toLowerCase());
             }
             var correctno = 0;
             for (var y = 0; y < array.length; y++) {
-              if (set.has(array[y]) == true) {
+              if (set.has(array[y].toLowerCase()) == true) {
                 correctno += 1;
               }
             }
@@ -1151,23 +1161,12 @@ app.post('/UpdateAnwserOnlineExam', (req, res) => {
             var oldmarks = parseInt(result1[x].MarksObtained);
             oldmarks = oldmarks - (parseInt(result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].marks));
             newtotalmarks = oldmarks + newmarks;
-            result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].marks=newmarks.toString();
+            result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].marks = newmarks.toString();
             result1[x].MarksObtained = newtotalmarks.toString();
           }
           let promises = [];
           for (var x = 0; x < result1.length; x++) {
             promises.push(db.collection("StudentOnlineAnwers").save(result1[x]));
-            // db.collection("StudentOnlineAnwers").save(result1[x], (err, result3) => {
-            //   if (err) {
-            //     res.send(err);
-            //   }
-            //   if (x == result1.length) {
-            //     res.send[{
-            //       status: true,
-            //       message: "Updated Successfully"
-            //     }];
-            //   }
-            // });
           }
           var x = 0;
           Promise.all(promises).then(function (results) {
@@ -1401,8 +1400,6 @@ app.post('/getSampleTestcaseResult', (req, res) => {
   });
 });
 
-
-
 app.post('/getTestcaseResult', (req, res) => {
 
   var testcasestocheck = testcasesinputglobal[req.body.questionid];
@@ -1461,8 +1458,6 @@ app.post('/getTestcaseResult', (req, res) => {
   });
 });
 
-
-
 app.post("/SubmitTest", (req, res) => {
   var data = {
     examID: examIDglobal,
@@ -1483,3 +1478,61 @@ app.post("/SubmitTest", (req, res) => {
     ]);
   });
 });
+
+var correctanswerslist = {};
+app.post('/getMCQExamDetails', (req, res) => {
+  db.collection("ExamDetails").find({ _id: mongodb.ObjectId(examIDglobal) }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      for (var x = 0; x < result[0].Questions.length; x++) {
+        correctanswerslist[result[0].Questions[x].questionid] = { 'correctanswer': result[0].Questions[x].correctAns, 'marks': result[0].Questions[x].marks };
+        result[0].Questions[x].correctAns = "";
+      }
+      res.send(result);
+    }
+  });
+});
+
+app.post('/SubmitMCQExam', (req, res) => {
+  var totalmarks = 0;
+  for(var x=0;x<req.body.StudentAnswers.length;x++){
+    var ans = req.body.StudentAnswers[x].Ans
+    var correctansnew = correctanswerslist[req.body.StudentAnswers[x].questionid].correctanswer;
+  
+    var array = ans.split(',');
+    var array1 = correctansnew.split(',');
+  
+    var set = new Set();
+  
+    for (var y = 0; y < array1.length; y++) {
+      set.add(array1[y].toLowerCase());
+    }
+    var correctno = 0;
+    for (var y = 0; y < array.length; y++) {
+      if (set.has(array[y].toLowerCase()) == true) {
+        correctno += 1;
+      }
+    }
+    var wrong = array.length - correctno;
+    var newmarks = (correctno / array1.length) * correctanswerslist[req.body.StudentAnswers[x].questionid].marks
+    newmarks = newmarks - wrong * 0.5;
+    totalmarks += newmarks;
+    req.body.StudentAnswers[x].marks = newmarks.toString();
+  }
+  req.body['MarksObtained'] = totalmarks.toString();
+  req.body['RollNo'] = StudentRollNoglobal;
+  req.body['examID'] = examIDglobal;
+  db.collection("StudentOnlineAnwers").save(req.body, (err, result) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("click added to db");
+    res.send([
+      {
+        message: "Request successfully logged",
+        status: true,
+      },
+    ]);
+  });
+})
