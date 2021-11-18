@@ -22,6 +22,7 @@ const { abort } = require("process");
 const { addAbortSignal } = require("stream");
 const e = require("express");
 const { resolveSoa } = require("dns");
+var nodemailer = require("nodemailer");
 
 // DB
 const mongoURI = "mongodb://ThaparUser:Pass123@cluster0-shard-00-00.jsaod.mongodb.net:27017,cluster0-shard-00-01.jsaod.mongodb.net:27017,cluster0-shard-00-02.jsaod.mongodb.net:27017/TechAcademy?ssl=true&replicaSet=atlas-1u2syf-shard-0&authSource=admin&retryWrites=true&w=majority";
@@ -74,7 +75,7 @@ app.post('/upload', upload.single('image'), (req, res, next) => {
     MarksObtained: req.body.MarksObtained,
     message: ""
   }
-  db.collection("Admin").find({ adminID: req.body.adminID, password: req.body.password }).toArray((err, result) => {
+  db.collection("StudentAnswerSheetInfo").find({ examID: req.body.examID, rollNo: req.body.rollNo }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
@@ -92,23 +93,48 @@ app.post('/upload', upload.single('image'), (req, res, next) => {
       }
     });
   });
+});
 
-  // console.log(obj);
-  // gfs.files.findOne({filename: req.file.filename}).toArray((err,result)=>{
-  //   if(err){
-  //     res.send(err);
-  //   }
-  //   console.log(result);
-  // })
-  // imgModel.create(obj, (err, item) => {
-  //     if (err) {
-  //         console.log(err);
-  //     }
-  //     else {
-  //         // item.save();
-  //         res.redirect('/');
-  //     }
-  // });
+
+app.post('/uploadNotes', upload.single('file'), (req, res) => {
+  var d = new Date()
+  var year = d.getFullYear();
+  var month = d.getMonth() + 1;
+  var sem = "1";
+  if (month > 6) {
+    sem = "2";
+  }
+  //check it
+  var data = {
+    filename: req.file.filename,
+    CourseID: req.body.CourseID,
+    Semester: sem,
+    Year: year.toString(),
+    type: "file",
+    link: "",
+    description:req.body.description
+  }
+  db.collection('LectureNotes').save(data, (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send([{
+      message: "Lecture Notes Uploaded for the Course",
+      status: true
+    }]);
+  });
+});
+
+app.post('/LectureLinkUpload', (req, res) => {
+  db.collection('LectureNotes').save(req.body, (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send([{
+      message: "Lecture Notes Uploaded for the Course",
+      status: true
+    }]);
+  });
 });
 
 app.get('/downloadFile/:filename', (req, res) => {
@@ -121,15 +147,15 @@ app.get('/downloadFile/:filename', (req, res) => {
     }
 
     // Check if image
-    if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
+    // if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
       // Read output to browser
       const readstream = gfs.createReadStream(file.filename);
       readstream.pipe(res);
-    } else {
-      res.status(404).json({
-        err: 'Not an image'
-      });
-    }
+    // } else {
+    //   res.status(404).json({
+    //     err: 'Not an image'
+    //   });
+    // }
   });
 });
 
@@ -137,6 +163,7 @@ app.get('/downloadFile/:filename', (req, res) => {
 var facultyIDglobal;
 var examIDglobal;
 var StudentRollNoglobal;
+var StudentemailIDglobal;
 
 let db;
 MongoClient.connect(url, (err, database) => {
@@ -265,8 +292,22 @@ app.get("/ScheduleOfflineExam", (req, res) => {
   res.sendFile(__dirname + "/Faculty_AddOfflineExam.html");
 })
 
-app.get("/submittedMessage", (req, res) => (req, res) => {
-  res.sendFile(_dirname, "/SubmittedMessage.html");
+app.get("/submittedMessage", (req, res) => {
+  res.sendFile(__dirname + "/SubmittedMessage.html");
+})
+
+
+app.get("/Faculty_ResolveDoubts", (req, res) => {
+  res.sendFile(__dirname + "/Faculty_Doubt.html");
+})
+
+app.get("/Faculty_UploadNotes", (req, res) => {
+  res.sendFile(__dirname + "/Faculty_UploadNotes.html");
+})
+
+
+app.get("/Student_StudyMaterial", (req, res) => {
+  res.sendFile(__dirname + "/Student_ViewNotes.html");
 })
 
 app.post("/execute", (req, res) => {
@@ -317,6 +358,7 @@ app.post("/signin", (req, res) => {
       }
       else {
         StudentRollNoglobal = result[0].RollNo;
+        StudentemailIDglobal = result[0].Email;
         res.send(result);
       }
     });
@@ -1060,7 +1102,7 @@ app.post('/AddExam', (req, res) => {
 });
 
 app.post('/getStudentAttendance', (req, res) => {
-  db.collection("StudentAttendance").find({ Year: '2021', Semester: '6', BatchID: 'COE6', RollNo: '101803095' }).toArray((err, result) => {
+  db.collection("StudentAttendance").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, RollNo: StudentRollNoglobal }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
@@ -1073,7 +1115,7 @@ app.post('/getStudentAttendance', (req, res) => {
         res1[result[0].CourseID] = 1;
       }
     }
-    db.collection("LectureScheduledHistory").find({ Year: '2021', Semester: '6', BatchID: 'COE6' }).toArray((err, result1) => {
+    db.collection("LectureScheduledHistory").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID }).toArray((err, result1) => {
       if (err) {
         res.send(err);
       }
@@ -1496,15 +1538,15 @@ app.post('/getMCQExamDetails', (req, res) => {
 
 app.post('/SubmitMCQExam', (req, res) => {
   var totalmarks = 0;
-  for(var x=0;x<req.body.StudentAnswers.length;x++){
+  for (var x = 0; x < req.body.StudentAnswers.length; x++) {
     var ans = req.body.StudentAnswers[x].Ans
     var correctansnew = correctanswerslist[req.body.StudentAnswers[x].questionid].correctanswer;
-  
+
     var array = ans.split(',');
     var array1 = correctansnew.split(',');
-  
+
     var set = new Set();
-  
+
     for (var y = 0; y < array1.length; y++) {
       set.add(array1[y].toLowerCase());
     }
@@ -1523,6 +1565,7 @@ app.post('/SubmitMCQExam', (req, res) => {
   req.body['MarksObtained'] = totalmarks.toString();
   req.body['RollNo'] = StudentRollNoglobal;
   req.body['examID'] = examIDglobal;
+
   db.collection("StudentOnlineAnwers").save(req.body, (err, result) => {
     if (err) {
       return console.log(err);
@@ -1536,3 +1579,81 @@ app.post('/SubmitMCQExam', (req, res) => {
     ]);
   });
 })
+
+app.post("/SaveDoubt", (req, res) => {
+  req.body['RollNo'] = StudentRollNoglobal;
+  req.body['StudentEmail'] = StudentemailIDglobal;
+  db.collection("Doubts").save(req.body, (err, result) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("click added to db");
+    res.send([
+      {
+        message: "Request successfully logged",
+        status: true,
+      },
+    ]);
+  });
+});
+
+
+app.post('/getUnsolvedDoubts', (req, res) => {
+  db.collection("Doubts").find({ FacultyID: facultyIDglobal, status: "0" }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(result);
+  });
+});
+
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  host: "smtp.gmail.com",
+  secure: true,
+  port: 587,
+  auth: {
+    user: "GBM918211@gmail.com",
+    pass: "Pass#1234!1",
+  },
+});
+
+app.post('/ResolveDoubt', (req, res) => {
+  db.collection("Doubts").find({ _id: mongodb.ObjectId(req.body.id) }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    result[0].status = "1";
+    db.collection('Doubts').save(result[0], (err, result1) => {
+      if (err) {
+        res.send(err);
+      }
+      let HelperOptions = {
+        from: "GBM918211@gmail.com",
+        to: req.body.email,
+        subject: "Your Doubt has been resolved",
+        text:
+          "Dear Student answer to your doubt i.e, " + result[0].doubt + " is as follows " + req.body.answer,
+      };
+      transporter.sendMail(HelperOptions, (error, info) => {
+        if (error) {
+          console.log(error);
+        } else {
+          res.send([{
+            message: 'Doubt has been Resolved',
+            status: true
+          }])
+        }
+      });
+    });
+  });
+});
+
+app.post('/getStudyMaterial', (req, res) => {
+  db.collection("LectureNotes").find({ Year:req.body.Year, Semester:req.body.Semester,CourseID:req.body.CourseID }).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send(result);
+  });
+});
