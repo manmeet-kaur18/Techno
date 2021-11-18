@@ -310,6 +310,10 @@ app.get("/Student_StudyMaterial", (req, res) => {
   res.sendFile(__dirname + "/Student_ViewNotes.html");
 })
 
+app.get("/Cancel_Lecture", (req, res) => {
+  res.sendFile(__dirname + "/Faculty_CancelLectureForm.html");
+})
+
 app.post("/execute", (req, res) => {
   console.log(req.body);
   var data = JSON.stringify(req.body);
@@ -1115,7 +1119,7 @@ app.post('/getStudentAttendance', (req, res) => {
         res1[result[0].CourseID] = 1;
       }
     }
-    db.collection("LectureScheduledHistory").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID }).toArray((err, result1) => {
+    db.collection("LectureScheduledHistory").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, status:{$in:["Offline","Online"]}}).toArray((err, result1) => {
       if (err) {
         res.send(err);
       }
@@ -1655,5 +1659,31 @@ app.post('/getStudyMaterial', (req, res) => {
       res.send(err);
     }
     res.send(result);
+  });
+});
+
+app.post('/getFacultySchedule', (req, res) => {
+  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.TeacherSem, FacultyID: facultyIDglobal}).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
+app.post("/CancelLecture", (req, res) => {
+  req.body['FacultyID']=facultyIDglobal;
+  db.collection("LectureScheduledHistory").save(req.body, (err, result) => {
+    if (err) {
+      return console.log(err);
+    }
+    console.log("click added to db");
+    res.send([
+      {
+        message: "Request successfully logged",
+        status: true,
+      },
+    ]);
   });
 });
