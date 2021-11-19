@@ -3,10 +3,10 @@ var mySwiper = new Swiper(".swiper-container", {
     loop: false,
     pagination: ".swiper-pagination",
     grabCursor: false,
-    speed: 2000,
+    speed: 3000,
     paginationClickable: true,
     parallax: true,
-    autoplay: false,
+    autoplay: true,
     effect: "slide",
     mousewheelControl: 1
 });

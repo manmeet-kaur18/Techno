@@ -229,6 +229,12 @@
                     <span>Study Material</span>
                 </a>
             </li><!-- End Dashboard Nav -->
+            <li class="nav-item">
+                <a class="nav-link collapsed" href="/Student_PrevYrPapers">
+                    <i class="bi bi-grid"></i>
+                    <span>Previous Year Papers</span>
+                </a>
+            </li><!-- End Dashboard Nav -->
         </ul>
     </aside><!-- End Sidebar-->
 
@@ -635,7 +641,7 @@
                 for (var x = 0; x < msg.length; x++) {
                     var span = document.createElement('span');
                     span.setAttribute('class', 'bg-yellow padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16  xs-font-size13');
-                    span.textContent = msg[x].FacultyInfo.CourseID;
+                    span.textContent = msg[x].CourseID;
                     var div1 = document.createElement('div');
                     div1.setAttribute('class', 'margin-10px-top font-size14');
                     div1.textContent = 'Faculty ID : ' + msg[x].FacultyID;

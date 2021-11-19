@@ -125,6 +125,23 @@ app.post('/uploadNotes', upload.single('file'), (req, res) => {
   });
 });
 
+app.post('/uploadPrevYrPaper', upload.single('file'), (req, res) => {
+  var data = {
+    filename: req.file.filename,
+    CourseID: req.body.CourseID,
+    description:req.body.description
+  }
+  db.collection('PrevYearPapers').save(data, (err, result) => {
+    if (err) {
+      res.send(err);
+    }
+    res.send([{
+      message: "Previous Year Paper Uploaded for the Course",
+      status: true
+    }]);
+  });
+});
+
 app.post('/LectureLinkUpload', (req, res) => {
   db.collection('LectureNotes').save(req.body, (err, result) => {
     if (err) {
@@ -313,6 +330,12 @@ app.get("/Student_StudyMaterial", (req, res) => {
 app.get("/Cancel_Lecture", (req, res) => {
   res.sendFile(__dirname + "/Faculty_CancelLectureForm.html");
 })
+
+
+app.get("/Student_PrevYrPapers", (req, res) => {
+  res.sendFile(__dirname + "/Student_PrevYrPapers.html");
+})
+
 
 app.post("/execute", (req, res) => {
   console.log(req.body);
@@ -1119,7 +1142,7 @@ app.post('/getStudentAttendance', (req, res) => {
         res1[result[0].CourseID] = 1;
       }
     }
-    db.collection("LectureScheduledHistory").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, status:{$in:["Offline","Online"]}}).toArray((err, result1) => {
+    db.collection("LectureScheduledHistory").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, Status:{$in:["Offline","Online"]}}).toArray((err, result1) => {
       if (err) {
         res.send(err);
       }
@@ -1687,3 +1710,14 @@ app.post("/CancelLecture", (req, res) => {
     ]);
   });
 });
+
+app.post('/getPreviousYearPapers', (req, res) => {
+  db.collection("PrevYearPapers").find({CourseID:req.body.CourseID}).toArray((err, result) => {
+    if (err) {
+      res.send(err);
+    } else {
+      res.send(result);
+    }
+  });
+});
+
