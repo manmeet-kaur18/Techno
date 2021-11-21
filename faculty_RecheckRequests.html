@@ -251,30 +251,22 @@
         </ul>
     </aside>
     <main id="main" class="main">
-        <div class="pagetitle">
-            <h1>General Tables</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item">Tables</li>
-                    <li class="breadcrumb-item active">General</li>
-                </ol>
-            </nav>
-        </div>
+
         <section class="section">
             <div class="row">
-                <div class="col-lg-6">
                     <div class="card">
                         <div class="card-body">
                             <h5 class="card-title">Recheck Requests</h5>
                             <table class="table table-bordered">
                                 <thead>
                                     <tr>
-                                        <th scope="col">#</th>
                                         <th scope="col">Student Roll Number</th>
-                                        <th scope="col">Student Name</th>
-                                        <th scope="col">Student Phone Number</th>
-                                        <th scope="col">Student EmailID</th>
+                                        <th scope="col">Message</th>
+                                        <th scope="col">Exam Name</th>
+                                        <th scope="col">Course ID</th>
+                                        <th scope="col">Marks Obtained</th>
+                                        <th scope="col">Total Marks</th>
+                                        <th scope="col">Details</th>
                                     </tr>
                                 </thead>
                                 <tbody id="RecheckExams">
@@ -283,15 +275,14 @@
                             <!-- End Table with stripped rows -->
                         </div>
                     </div>
-                </div>
-                <div class="col-lg-6">
+            </div>
+            <div class="row">
                     <div class="card">
                         <div class="card-body" id="Review">
                             <h5 class="card-title">Review Requests for Recheck of Answer Sheet</h5>
                         </div>
                     </div>
-                </div>
-                <div>
+            <div>
         </section>
     </main>
 
@@ -331,19 +322,27 @@
                     td2.setAttribute('class', 'align-middle');
                     var td3 = document.createElement('td');
                     td3.setAttribute('class', 'align-middle');
+                    var td4 = document.createElement('td');
+                    td4.setAttribute('class', 'align-middle');
+                    var td5 = document.createElement('td');
+                    td5.setAttribute('class', 'align-middle');
 
                     th.setAttribute('scope', 'row');
                     th.textContent = msg[x].rollNo;
                     td1.textContent = msg[x].message;
                     td2.textContent = msg[x].ExamInfo.examName;
                     td3.textContent = msg[x].ExamInfo.CourseID;
+                    td4.textContent = msg[x].MarksObtained;
+                    td5.textContent = msg[x].ExamInfo.TotalMarks;
 
                     tr.appendChild(th);
                     tr.appendChild(td1);
                     tr.appendChild(td2);
                     tr.appendChild(td3);
+                    tr.appendChild(td4);
+                    tr.appendChild(td5);
 
-                    var td5 = document.createElement('td');
+                    var td6 = document.createElement('td');
                     var button1 = document.createElement('button');
 
                     button1.setAttribute('class', 'btn btn-outline-success');
@@ -351,8 +350,8 @@
                     str = "ViewExam('" + msg[x].examID + "','" + msg[x].rollNo + "','" + msg[x].filename + "')";
                     button1.setAttribute('onclick', str);
 
-                    td5.appendChild(button1);
-                    tr.appendChild(td5);
+                    td6.appendChild(button1);
+                    tr.appendChild(td6);
                     parent.appendChild(tr);
                 }
             }
@@ -403,7 +402,7 @@
         button.setAttribute('class', 'btn btn-outline-success');
         button.textContent = "Done";
         var status = "done"
-        var str = "ChangeStatus('" + examID + "','" + status +"','"+studentRollNo +"')";
+        var str = "ChangeStatus('" + examID + "','" + status + "','" + studentRollNo + "')";
         button.setAttribute('onclick', str);
 
         div3.appendChild(button);
@@ -414,7 +413,7 @@
             'MarksObtained': document.getElementById('MarksObtained').value,
             'examid': examID,
             'status': status,
-            'rollNo':studentRollNo
+            'rollNo': studentRollNo
         };
         $.ajax({
             type: "POST",
@@ -429,4 +428,5 @@
         });
     }
 </script>
+
 </html>

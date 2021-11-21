@@ -75,13 +75,13 @@ app.post('/upload', upload.single('image'), (req, res, next) => {
     MarksObtained: req.body.MarksObtained,
     message: ""
   }
-  db.collection("StudentAnswerSheetInfo").find({ examID: req.body.examID, rollNo: req.body.rollNo }).toArray((err, result) => {
+  db.collection("StudentAnswerSheetInfo").find({ examID: req.body.ExamID, rollNo: req.body.rollNo }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
     var finaldata = data;
     if (result.length != 0) {
-      result[0].filedname = result[0].filename + ',' + data.filename;
+      result[0].filename = result[0].filename + ',' + data.filename;
       finaldata = result[0];
     }
     db.collection('StudentAnswerSheetInfo').save(finaldata, (err, result) => {
@@ -112,7 +112,7 @@ app.post('/uploadNotes', upload.single('file'), (req, res) => {
     Year: year.toString(),
     type: "file",
     link: "",
-    description:req.body.description
+    description: req.body.description
   }
   db.collection('LectureNotes').save(data, (err, result) => {
     if (err) {
@@ -129,7 +129,7 @@ app.post('/uploadPrevYrPaper', upload.single('file'), (req, res) => {
   var data = {
     filename: req.file.filename,
     CourseID: req.body.CourseID,
-    description:req.body.description
+    description: req.body.description
   }
   db.collection('PrevYearPapers').save(data, (err, result) => {
     if (err) {
@@ -165,9 +165,9 @@ app.get('/downloadFile/:filename', (req, res) => {
 
     // Check if image
     // if (file.contentType === 'image/jpeg' || file.contentType === 'image/png') {
-      // Read output to browser
-      const readstream = gfs.createReadStream(file.filename);
-      readstream.pipe(res);
+    // Read output to browser
+    const readstream = gfs.createReadStream(file.filename);
+    readstream.pipe(res);
     // } else {
     //   res.status(404).json({
     //     err: 'Not an image'
@@ -518,7 +518,9 @@ app.post("/registerStudent", (req, res) => {
           ]);
         })
       }
-      res.send([]);
+      else {
+        res.send([]);
+      }
     }
   });
 });
@@ -530,7 +532,7 @@ app.post("/assignStudenttoBatch", (req, res) => {
       res.send(err);
     }
     else {
-      if (result.length == 0) {
+      if (result.length > 0) {
         db.collection("StudentBatchInfo").find({ RollNo: req.body.RollNo, Year: req.body.Year }).toArray((err, result) => {
           if (err) {
             res.send(err);
@@ -1142,7 +1144,7 @@ app.post('/getStudentAttendance', (req, res) => {
         res1[result[0].CourseID] = 1;
       }
     }
-    db.collection("LectureScheduledHistory").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, Status:{$in:["Offline","Online"]}}).toArray((err, result1) => {
+    db.collection("LectureScheduledHistory").find({ Year: req.body.Year, Semester: req.body.Semester, BatchID: req.body.BatchID, Status: { $in: ["Offline", "Online"] } }).toArray((err, result1) => {
       if (err) {
         res.send(err);
       }
@@ -1205,50 +1207,58 @@ app.post('/UpdateAnwserOnlineExam', (req, res) => {
           if (err) {
             return err;
           }
-          for (var x = 0; x < result1.length; x++) {
-            var ans = result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].Ans
-            var correctansnew = req.body.correctanswer;
+          if (result1.length > 0) {
+            for (var x = 0; x < result1.length; x++) {
+              var ans = result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].Ans
+              var correctansnew = req.body.correctanswer;
 
-            var array = ans.split(',');
-            var array1 = correctansnew.split(',');
+              var array = ans.split(',');
+              var array1 = correctansnew.split(',');
 
-            var set = new Set();
+              var set = new Set();
 
-            for (var y = 0; y < array1.length; y++) {
-              set.add(array1[y].toLowerCase());
-            }
-            var correctno = 0;
-            for (var y = 0; y < array.length; y++) {
-              if (set.has(array[y].toLowerCase()) == true) {
-                correctno += 1;
+              for (var y = 0; y < array1.length; y++) {
+                set.add(array1[y].toLowerCase());
               }
-            }
-            var wrong = array.length - correctno;
-            var newmarks = (correctno / array1.length) * (parseInt(result[0].Questions[parseInt(req.body.questionid) - 1].marks))
-            newmarks = newmarks - wrong * 0.5;
-
-            var oldmarks = parseInt(result1[x].MarksObtained);
-            oldmarks = oldmarks - (parseInt(result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].marks));
-            newtotalmarks = oldmarks + newmarks;
-            result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].marks = newmarks.toString();
-            result1[x].MarksObtained = newtotalmarks.toString();
-          }
-          let promises = [];
-          for (var x = 0; x < result1.length; x++) {
-            promises.push(db.collection("StudentOnlineAnwers").save(result1[x]));
-          }
-          var x = 0;
-          Promise.all(promises).then(function (results) {
-            results.forEach(function (response) {
-              if (x == result1.length - 1) {
-                res.send([{
-                  status: true,
-                  message: "Updated Successfully"
-                }]);
+              var correctno = 0;
+              for (var y = 0; y < array.length; y++) {
+                if (set.has(array[y].toLowerCase()) == true) {
+                  correctno += 1;
+                }
               }
-              x += 1;
+              var wrong = array.length - correctno;
+              var newmarks = (correctno / array1.length) * (parseInt(result[0].Questions[parseInt(req.body.questionid) - 1].marks))
+              newmarks = newmarks - wrong * 0.5;
+
+              var oldmarks = parseInt(result1[x].MarksObtained);
+              oldmarks = oldmarks - (parseInt(result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].marks));
+              newtotalmarks = oldmarks + newmarks;
+              result1[x].StudentAnswers[parseInt(req.body.questionid) - 1].marks = newmarks.toString();
+              result1[x].MarksObtained = newtotalmarks.toString();
+            }
+            let promises = [];
+            for (var x = 0; x < result1.length; x++) {
+              promises.push(db.collection("StudentOnlineAnwers").save(result1[x]));
+            }
+            var x = 0;
+            Promise.all(promises).then(function (results) {
+              results.forEach(function (response) {
+                if (x == result1.length - 1) {
+                  res.send([{
+                    status: true,
+                    message: "Updated Successfully"
+                  }]);
+                }
+                x += 1;
+              });
             });
-          });
+          }
+          else {
+            res.send([{
+              status: true,
+              message: "Updated Successfully"
+            }]);
+          }
         });
       });
     }
@@ -1262,7 +1272,7 @@ app.post('/getUpcomingExams', (req, res) => {
       { BatchID: { $in: req.body.BatchID }, CourseID: { $in: req.body.Courselist }, Date: { $gt: req.body.Date }, Semester: req.body.Semester },
       { BatchID: { $in: req.body.BatchID }, CourseID: { $in: req.body.Courselist }, Date: req.body.Date, 'EndTime': { $gt: req.body.time }, Semester: req.body.Semester }
     ]
-  }).toArray((err, result) => {
+  }).sort({ 'Date': 1, 'StartTime': 1 }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
@@ -1677,7 +1687,7 @@ app.post('/ResolveDoubt', (req, res) => {
 });
 
 app.post('/getStudyMaterial', (req, res) => {
-  db.collection("LectureNotes").find({ Year:req.body.Year, Semester:req.body.Semester,CourseID:req.body.CourseID }).toArray((err, result) => {
+  db.collection("LectureNotes").find({ Year: req.body.Year, Semester: req.body.Semester, CourseID: req.body.CourseID }).toArray((err, result) => {
     if (err) {
       res.send(err);
     }
@@ -1686,7 +1696,7 @@ app.post('/getStudyMaterial', (req, res) => {
 });
 
 app.post('/getFacultySchedule', (req, res) => {
-  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.TeacherSem, FacultyID: facultyIDglobal}).toArray((err, result) => {
+  db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.TeacherSem, FacultyID: facultyIDglobal }).toArray((err, result) => {
     if (err) {
       res.send(err);
     } else {
@@ -1696,7 +1706,7 @@ app.post('/getFacultySchedule', (req, res) => {
 });
 
 app.post("/CancelLecture", (req, res) => {
-  req.body['FacultyID']=facultyIDglobal;
+  req.body['FacultyID'] = facultyIDglobal;
   db.collection("LectureScheduledHistory").save(req.body, (err, result) => {
     if (err) {
       return console.log(err);
@@ -1712,7 +1722,7 @@ app.post("/CancelLecture", (req, res) => {
 });
 
 app.post('/getPreviousYearPapers', (req, res) => {
-  db.collection("PrevYearPapers").find({CourseID:req.body.CourseID}).toArray((err, result) => {
+  db.collection("PrevYearPapers").find({ CourseID: req.body.CourseID }).toArray((err, result) => {
     if (err) {
       res.send(err);
     } else {

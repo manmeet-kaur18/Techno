@@ -494,6 +494,8 @@
     var BatchID = "No Class within 6 Hours";
     var Semester = "No Class within 6 Hours";
     var TimeSlot = "No Class within 6 Hours";
+    var location1 = "No Class within 6 hours";
+    var zoomlink = "No Class within 6 hours";
 
     $(document).ready(function () {
         var data = {
@@ -515,6 +517,8 @@
                             BatchID = msg[x].BatchID;
                             Semester = msg[x].Semester;
                             TimeSlot = msg[x].TimeSlot;
+                            location1 = msg[x].Location;
+                            zoomlink = msg[x].zoomlink;
                         }
                     }
                 }
@@ -526,11 +530,19 @@
                 h3.textContent = 'Semester - ' + Semester;
                 var h4 = document.createElement('h5');
                 h4.textContent = 'Time Slot - ' + TimeSlot;
+                var h5 = document.createElement('h5');
+                h5.textContent = 'Zoom Link for Online - '+ zoomlink;
+                var h6 = document.createElement('h5');
+                h6.textContent = 'Location for Offline class - '+ location1;
+
                 var parent = document.getElementById('upComing');
+
                 parent.appendChild(h1);
                 parent.appendChild(h2);
                 parent.appendChild(h3);
                 parent.appendChild(h4);
+                parent.appendChild(h5);
+                parent.appendChild(h6);
 
                 if (courseID != "No Class within 6 Hours") {
                     var data2 = {
@@ -589,9 +601,9 @@
                                                 total = total + 1;
                                             }
                                             var h6 = document.createElement('h5');
-                                            h6.textContent = 'No of Students in mode Online - ' + (online).toString() + ' Students';
+                                            h6.textContent = 'No of Students preferring Online - ' + (online).toString() + ' Students';
                                             var h7 = document.createElement('h5');
-                                            h7.textContent = 'No of Students in mode Offline - ' + (total - online).toString() + ' Students';
+                                            h7.textContent = 'No of Students preferring Offline - ' + (total - online).toString() + ' Students';
                                             parent.appendChild(h6);
                                             parent.appendChild(h7);
                                         }

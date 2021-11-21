@@ -240,17 +240,6 @@
 
     <main id="main" class="main">
 
-        <div class="pagetitle">
-            <h1>General Tables</h1>
-            <nav>
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="index.html">Home</a></li>
-                    <li class="breadcrumb-item">Tables</li>
-                    <li class="breadcrumb-item active">General</li>
-                </ol>
-            </nav>
-        </div><!-- End Page Title -->
-
         <section class="section">
             <div class="row">
                 <div class="card">
@@ -464,6 +453,8 @@
     var Semester = "No Class within 6 Hours";
     var TimeSlot = "No Class within 6 Hours";
     var facultyID = "No Class within 6 Hours";
+    var location1 = "No Class within 6 Hours";
+    var zoomlink = "No Class within 6 hours";
 
     $(document).ready(function () {
         maketimetable();
@@ -575,6 +566,8 @@
                             Semester = msg[x].Semester;
                             TimeSlot = msg[x].TimeSlot;
                             facultyID = msg[x].FacultyID;
+                            location1 = msg[x].Location;
+                            zoomlink = msg[x].zoomlink;
                         }
                     }
                 }
@@ -587,11 +580,18 @@
                 var h4 = document.createElement('h5');
                 h4.textContent = 'Time Slot - ' + TimeSlot;
                 var parent = document.getElementById('upComing');
+                var h5 = document.createElement('h5');
+                h5.textContent = 'Zoom Link for Online - '+ zoomlink;
+                var h6 = document.createElement('h5');
+                h6.textContent = 'Location for Offline class - '+ location1;
+
                 parent.appendChild(h1);
                 parent.appendChild(h2);
                 parent.appendChild(h3);
                 parent.appendChild(h4);
-
+                parent.appendChild(h5);
+                parent.appendChild(h6);
+                
                 if(courseID != "No Class within 6 Hours"){
                     var data2 = {
                         'FacultyID':facultyID,
