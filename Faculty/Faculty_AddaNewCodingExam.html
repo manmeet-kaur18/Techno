@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
 
-    <title>Tables / General - NiceAdmin Bootstrap Template</title>
+    <title>Techno</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -42,6 +42,10 @@
         .card-title {
             font-size: 25px;
         }
+
+        h8{
+            font-weight: 600 !important;
+        }
     </style>
 </head>
 
@@ -51,9 +55,9 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
+            <a href="" class="logo d-flex align-items-center">
                 <img src="/assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">NiceAdmin</span>
+                <span class="d-none d-lg-block">Techno</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
 
@@ -136,13 +140,46 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-
-        
         <section class="section">
             <div class="row">
                 <div class="card">
                     <div class="card-body">
-                        <h5 class="card-title">Upload Coding Questions for a Exam</h5>
+                        <h5 class="card-title">Upload Coding Questions for a Exam 
+                        </h5>
+                        <div class="row mb-3">
+                        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered" style="background: rgba(113,96,255);color:white">
+                            Instructions for creating Coding Questions
+                        </button>
+                          <div class="modal fade" id="verticalycentered" tabindex="-1">
+                            <div class="modal-dialog modal-dialog-centered">
+                              <div class="modal-content">
+                                <div class="modal-header">
+                                  <h5 class="modal-title">Instructions to How to Create Coding Questions</h5>
+                                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <h8>Question</h8> : Enter the question specifying all the constraint requirements and the inputs that code will require to execute
+                                    <br>
+                                    A certain pattern needs to be followed to give the testcases as input to schedule coding exam.
+                                    So follow the below instructions to input the testcase - <br>
+                                    <h8>Sample Testcase/ Testcase</h8> : The input needs to follow the below given pattern while entering it
+                                    <br>
+                                    <h8>[[testcase1],[testcase2],[testcase3]]</h8>
+                                    <br>
+                                    Now the testcase will be a comma seperated list of inputs required for that particular testcase
+                                    <br> 
+                                    <h8>For Example : [[1,2,3],[3,4,5],[4,5,6]] </h8> here 1,2,3 is inputs for testcase1, 3,4,5 are inputs for testcase 2 and so on
+                                    <br>
+                                    Now for single sample testcase/ testcase format is [[1,2,3]] - where 1,2,3 is inputs for testcase  
+                                    <br>
+                                </div>
+                                <div class="modal-footer">
+                                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgba(113,96,255);color:white">Close</button>
+                                </div>
+                              </div>
+                            </div>
+                          </div><!-- End Vertically centered Modal-->
+                        </div>
                         <div class="row mb-3">
                             <label for="inputEmail" class="col-sm-2 col-form-label">Exam Name</label>
                             <div class="col-sm-10">
@@ -234,7 +271,7 @@
                         <button type="button" class="btn btn-outline-success" id="submit">
                             Add Exam
                         </button>
-                        <!-- <img src="https://drive.google.com/uc?export=view&id=1n_ur95EsONbSM5SbFicElY3oatsmCDGi"> -->
+                   
                     </div>
                 </div>
             </div>
@@ -258,7 +295,6 @@
     <script src="/assets/js/main.js"></script>
     <script src="js/Faculty/AddCodingExam.js">
     </script>
-    
 </body>
 
 </html>

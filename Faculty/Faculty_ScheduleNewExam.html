@@ -4,8 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
-
-    <title>Tables / General - NiceAdmin Bootstrap Template</title>
+    <title>Techno</title>
     <meta content="" name="description">
     <meta content="" name="keywords">
 
@@ -165,13 +164,11 @@
         .card-title {
             font-size: 25px;
         }
+        
+        h8{
+            font-weight: 600 !important;
+        }
     </style>
-    <!-- =======================================================
-  * Template Name: NiceAdmin - v2.1.0
-  * Template URL: https://bootstrapmade.com/nice-admin-bootstrap-admin-html-template/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
 </head>
 
 <body>
@@ -180,9 +177,9 @@
     <header id="header" class="header fixed-top d-flex align-items-center">
 
         <div class="d-flex align-items-center justify-content-between">
-            <a href="index.html" class="logo d-flex align-items-center">
+            <a href="" class="logo d-flex align-items-center">
                 <img src="/assets/img/logo.png" alt="">
-                <span class="d-none d-lg-block">NiceAdmin</span>
+                <span class="d-none d-lg-block">Techno</span>
             </a>
             <i class="bi bi-list toggle-sidebar-btn"></i>
 
@@ -259,13 +256,46 @@
     </aside><!-- End Sidebar-->
 
     <main id="main" class="main">
-
-       
         <section class="section">
             <div class="row">
                 <div class="card">
                     <div class="card-body">
                         <h5 class="card-title">Upload MCQ Questions for a Exam</h5>
+                        <div class="row mb-3">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#verticalycentered" style="background: rgba(113,96,255);color:white">
+                                Instructions for creating MCQ Questions
+                            </button>
+                              <div class="modal fade" id="verticalycentered" tabindex="-1">
+                                <div class="modal-dialog modal-dialog-centered">
+                                  <div class="modal-content">
+                                    <div class="modal-header">
+                                      <h5 class="modal-title">Instructions to How to Create MCQ Questions</h5>
+                                      <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        <h8>Question :</h8> Enter the question you want to ask
+                                        <br>
+                                        <h8>Options to Choose from : </h8> Enter a comma seperated string of the options available to Student to choose form-control
+                                        <br>
+                                        <h8>For Example : Option1,Option2,Option3,Option4 </h8>
+                                        <br>
+                                        <h8>Correct Answers list (There can be Multiple correct Answers for 1 question)</h8>
+                                        <br>
+                                        Enter again a comma seperated list of correct Options from the list of options
+                                        <br>
+                                        <h8>For Example - Option1,Option2,Option3,...</h8>
+                                        <br>
+                                        For single correct option just enter it in the input
+                                        <br>
+                                        <h8>For Example - Option1 </h8>
+                                    </div>
+                                    <div class="modal-footer">
+                                      <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" style="background: rgba(113,96,255);color:white">Close</button>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div><!-- End Vertically centered Modal-->
+                            </div>
                         <div class="row mb-3">
                             <label for="inputEmail" class="col-sm-2 col-form-label">Exam Name</label>
                             <div class="col-sm-10">
@@ -321,8 +351,6 @@
                                 </select>
                             </div>
                         </div>
-                        
-                        
                         <div class="row mb-3">
                             <label class="col-sm-2 col-form-label">Enter TotalMarks </label>
                             <div class="col-sm-10">
@@ -359,7 +387,6 @@
                         <button type="button" class="btn btn-outline-success" id="submit">
                             Add Exam
                         </button>
-                        <!-- <img src="https://drive.google.com/uc?export=view&id=1n_ur95EsONbSM5SbFicElY3oatsmCDGi"> -->
                     </div>
                 </div>
             </div>
