@@ -1,9 +1,9 @@
 var d = new Date();
 var month = d.getMonth();
-month = (parseInt(month)+1).toString();
-var sem = 1;
-if (parseInt(month) > 6) {
-    sem = 2;
+month =month+1;
+var sem = "1";
+if (month > 6) {
+    sem = "2";
 }
 
 var date = d.getDate();
@@ -245,11 +245,13 @@ document.getElementById('CourseID').onchange = function () {
         dataType: "json",
         success: function (msg) {
             for (var x = 0; x < msg.length; x++) {
-                var optiondiv = document.createElement('option');
-                optiondiv.value = msg[x]._id;
-                optiondiv.textContent = msg[x].examName;
-                questionlist[msg[x]._id] = { 'Questions': (msg[x].Questions), 'type': msg[x].Type, 'ExamName': msg[x].examName, 'TotalMarks': msg[x].TotalMarks };
-                parent.appendChild(optiondiv);
+                if(msg[x].Type=="MCQ" || msg[x].Type == "Coding"){
+                    var optiondiv = document.createElement('option');
+                    optiondiv.value = msg[x]._id;
+                    optiondiv.textContent = msg[x].examName;
+                    questionlist[msg[x]._id] = { 'Questions': (msg[x].Questions), 'type': msg[x].Type, 'ExamName': msg[x].examName, 'TotalMarks': msg[x].TotalMarks };
+                    parent.appendChild(optiondiv);
+                }
             }
         },
         data: data,

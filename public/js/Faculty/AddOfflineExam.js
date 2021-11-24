@@ -214,6 +214,7 @@ $(document).ready(function () {
          'TotalMarks':document.getElementById('totalMarks').value,
          'CourseID':document.getElementById('CourseID').value,
          'Date':document.getElementById('date').value,
+         'BatchID':batchlist[x],
          'StartTime':document.getElementById('startTime').value,
          'EndTime':document.getElementById('endTime').value,
          'TeacherSem':TeacherSem,

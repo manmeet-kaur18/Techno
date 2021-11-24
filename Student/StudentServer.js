@@ -296,7 +296,7 @@ module.exports = function () {
                 var res2 = {};
                 for (var x = 0; x < result1.length; x++) {
                     if (result1[0].CourseID in res2) {
-                        res2[result1[0].CourseID + result[0]] += 1;
+                        res2[result1[0].CourseID] += 1;
                     }
                     else {
                         res2[result1[0].CourseID] = 1;
@@ -351,6 +351,9 @@ module.exports = function () {
         }).sort({ 'Date': 1, 'StartTime': 1 }).toArray((err, result) => {
             if (err) {
                 res.send(err);
+            }
+            for(var x=0;x<result.length;x++){
+                result[x].Questions = [];
             }
             res.send(result);
         })

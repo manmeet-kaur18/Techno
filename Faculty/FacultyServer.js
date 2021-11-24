@@ -249,7 +249,7 @@ module.exports = function () {
 
 
   app.post('/getFacultyUpcomingClasses', (req, res) => {
-    db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.Sem, FacultyID: facultyIDglobal, Day: req.body.day }).toArray((err, result) => {
+     db.collection("LectureSchedule").find({ Year: req.body.Year, TeacherSem: req.body.Sem, FacultyID: facultyIDglobal, Day: req.body.day }).toArray((err, result) => {
       if (err) {
         res.send(err);
       } else {
@@ -291,7 +291,7 @@ module.exports = function () {
   var pcdate = "";
 
   app.post('/getPresentClass', (req, res) => {
-    db.collection("LectureScheduledHistory").find({ Year: req.body.Year, TeacherSem: req.body.Sem, FacultyID: facultyIDglobal, Date: req.body.Date }).toArray((err, result) => {
+    db.collection("LectureScheduledHistory").find({ Year: req.body.Year, TeacherSem: req.body.Sem, FacultyID: facultyIDglobal, Date: req.body.Date, Status:{$in:["Online","Offline"]} }).toArray((err, result) => {
       if (err) {
         res.send(err);
       }

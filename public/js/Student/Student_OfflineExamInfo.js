@@ -1,9 +1,9 @@
 var d = new Date();
 var month = d.getMonth();
-month = (parseInt(month)+1).toString();
-var sem = 1;
-if (parseInt(month) > 6) {
-    sem = 2;
+month = month+1;
+var sem = "1";
+if (month > 6) {
+    sem = "2";
 }
 
 var date = d.getDate();

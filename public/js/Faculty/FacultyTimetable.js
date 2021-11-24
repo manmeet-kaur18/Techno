@@ -1,23 +1,23 @@
 //Actual Implementation
-    // var dict1={"1":"Monday","2":"Tuesday","3":"Wednesday","4":"Thursday","5":"Friday","6":"Saturday","7":"Sunday"};
-    // const d = new Date();
-    // var hour = d.getHours();
-    // var day = dict1[d.getDay()];
-    // var month = d.getMonth();
-    // var sem = 1;
-    // if((parseInt(month)+1) > 6){
-    //     sem = 2;
-    // }
-    // var date = d.getDate();
-    // var todaydate = date+'-'+month+'-'+year;
-    // var year = d.getFullYear();
+    var dict1={"1":"Monday","2":"Tuesday","3":"Wednesday","4":"Thursday","5":"Friday","6":"Saturday","7":"Sunday"};
+    const d = new Date();
+    var hour = d.getHours();
+    var day = dict1[d.getDay()];
+    var month = d.getMonth()+1;
+    var sem = "1";
+    if(month > 6){
+        sem = "2";
+    }
+    var todaydate = d.getDate();
+    var year = d.getFullYear();
+    var date = todaydate+'-'+month+'-'+year;
 
     // For Testing
-    var hour = 9;
-    var day = "Monday";
-    var year = "2021";
-    var sem = "2";
-    var date = "15-11-2021";
+    // var hour = 9;
+    // var day = "Monday";
+    // var year = "2021";
+    // var sem = "2";
+    // var date = "15-11-2021";
 
     var mintimediff = 6;
     var courseID = "No Class within 6 Hours";
@@ -159,6 +159,9 @@
                         },
                         data: data2
                     });
+                }
+                else{
+                    getPresentClass();
                 }
             },
             data: data

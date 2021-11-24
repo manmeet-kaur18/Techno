@@ -1,0 +1,4 @@
+{
+    "appService.defaultWebAppToDeploy": "/subscriptions/4e41a2fb-43ca-418d-bd1d-104713ba46b0/resourceGroups/appsvc_linux_centralus/providers/Microsoft.Web/sites/Techno-CollegePartner",
+    "appService.deploySubpath": "."
+}
