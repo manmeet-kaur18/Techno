@@ -1,17 +1,10 @@
 $(document).ready(function () {
     const mySet1 = new Set()
     var parentdiv = document.getElementById('BatchID');
-    // var parentdiv1 = document.getElementById('BatchID2');
-
     var optiondiv4 = document.createElement('option');
-    optiondiv4.value = "Open this Select Menu";
-    optiondiv4.textContent = "Open this Select Menu";
+    optiondiv4.value = "Open this select menu";
+    optiondiv4.textContent = "Open this select menu";
     parentdiv.appendChild(optiondiv4);
-
-    // var optiondiv3 = document.createElement('option');
-    // optiondiv3.value = "Open this Select Menu";
-    // optiondiv3.textContent = "Open this Select Menu";
-    // parentdiv1.appendChild(optiondiv3);
 
     $.ajax({
         type: "GET",
@@ -102,68 +95,6 @@ document.getElementById('BatchID').onchange = function () {
         data: data
     });
 }
-
-// document.getElementById('BatchID2').onchange = function () {
-//     var parent = document.getElementById('Semester3');
-//     const mySet1 = new Set()
-//     parent.innerHTML = "";
-//     var e = document.getElementById("BatchID2");
-//     var strUser = e.value;
-//     data = {
-//         "BatchID": strUser
-//     }
-//     $.ajax({
-//         type: "POST",
-//         url: "/getsemester",
-//         dataType: "json",
-//         success: function (msg) {
-//             var optiondiv2 = document.createElement('option');
-//             optiondiv2.value = "Open this Select Menu";
-//             optiondiv2.textContent = "Open this Select Menu";
-//             parent.appendChild(optiondiv2);
-//             for (var x = 0; x < msg.length; x++) {
-//                 if (mySet1.has(msg[x].Semester) == false) {
-//                     var optiondiv = document.createElement('option');
-//                     optiondiv.value = msg[x].Semester;
-//                     optiondiv.textContent = msg[x].Semester;
-//                     parent.appendChild(optiondiv);
-//                     mySet1.add(msg[x].Semester);
-//                 }
-//             }
-//         },
-//         data: data
-//     });
-// }
-
-// document.getElementById('Semester3').onchange = function () {
-//     var parent = document.getElementById('CourseID2');
-//     const mySet1 = new Set()
-//     parent.innerHTML = "";
-
-//     data = {
-//         "BatchID": document.getElementById('BatchID2').value,
-//         "Semester":document.getElementById('Semester3').value
-//     }
-
-//     $.ajax({
-//         type: "POST",
-//         url: "/getCoursesforBS",
-//         dataType: "json",
-//         success: function (msg) {
-//             for (var x = 0; x < msg.length; x++) {
-//                 if (mySet1.has(msg[x].CourseID) == false) {
-//                     var optiondiv = document.createElement('option');
-//                     optiondiv.value = msg[x].CourseID;
-//                     optiondiv.textContent = msg[x].CourseID;
-//                     parent.appendChild(optiondiv);
-//                     mySet1.add(msg[x].CourseID);
-//                 }
-//             }
-//         },
-//         data: data
-//     });
-// }
-
 const button1 = document.getElementById('assignStudentBatch');
 button1.addEventListener('click', function (e) {
     console.log('button was clicked');
@@ -241,8 +172,6 @@ button3.addEventListener('click', function (e) {
 const button4 = document.getElementById('addCourse');
 button4.addEventListener('click', function (e) {
     console.log('button was clicked');
-    // var d = new Date();
-    // var year = d.getFullYear();
     
     var data = {
         'BranchID': document.getElementById('BranchID1').value,

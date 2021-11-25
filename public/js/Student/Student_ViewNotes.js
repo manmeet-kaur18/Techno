@@ -1,5 +1,6 @@
 document.getElementById('year').onchange = function () {
     var year = document.getElementById('year').value;
+
     var optiondiv = document.createElement('option');
     optiondiv.textContent = "Open this select menu";
     optiondiv.value = "Open this select menu";
@@ -7,25 +8,36 @@ document.getElementById('year').onchange = function () {
     parent.innerHTML = "";
     parent.appendChild(optiondiv);
 
+    var parent1 = document.getElementById('CourseID');
+    parent1.innerHTML = "";
+    var option1 = document.createElement('option');
+    option1.textContent = "Open this select menu";
+    option1.value = "Open this select menu";
+    parent1.appendChild(option1);
+
+    var parent3 = document.getElementById('Notes');
+    parent3.innerHTML = "";
     var data = {
         'Year': year
     }
-    $.ajax({
-        type: "POST",
-        url: "/getStudentBatch",
-        dataType: "json",
-        success: function (msg) {
-            if (msg.length > 0) {
-                for (var x = 0; x < msg.length; x++) {
-                    var optiondiv = document.createElement('option');
-                    optiondiv.textContent = msg[x].BatchID + ',' + msg[x].Semester;
-                    optiondiv.value = msg[x].BatchID + ',' + msg[x].Semester;
-                    parent.appendChild(optiondiv);
+    if (data['Year'] != "Open this select menu") {
+        $.ajax({
+            type: "POST",
+            url: "/getStudentBatch",
+            dataType: "json",
+            success: function (msg) {
+                if (msg.length > 0) {
+                    for (var x = 0; x < msg.length; x++) {
+                        var optiondiv = document.createElement('option');
+                        optiondiv.textContent = msg[x].BatchID + ',' + msg[x].Semester;
+                        optiondiv.value = msg[x].BatchID + ',' + msg[x].Semester;
+                        parent.appendChild(optiondiv);
+                    }
                 }
-            }
-        },
-        data: data
-    });
+            },
+            data: data
+        });
+    }
 }
 
 document.getElementById('BatchDetail').onchange = function () {
@@ -37,78 +49,83 @@ document.getElementById('BatchDetail').onchange = function () {
     optiondiv.value = "Open this select menu";
     parent.appendChild(optiondiv);
 
+    var parent3 = document.getElementById('Notes');
+    parent3.innerHTML = "";
+
     const mySet1 = new Set()
 
-    data = {
-        "BatchID": document.getElementById('BatchDetail').value.split(',')[0],
-        "Semester": document.getElementById('BatchDetail').value.split(',')[1],
-        'Year': document.getElementById('year').value
-    }
-
-    $.ajax({
-        type: "POST",
-        url: "/getCoursesforBS",
-        dataType: "json",
-        success: function (msg) {
-            for (var x = 0; x < msg.length; x++) {
-                if (mySet1.has(msg[x].CourseID) == false) {
-                    var optiondiv = document.createElement('option');
-                    optiondiv.value = msg[x].CourseID;
-                    optiondiv.textContent = msg[x].CourseID;
-                    parent.appendChild(optiondiv);
-                    mySet1.add(msg[x].CourseID);
+    if (document.getElementById('BatchDetail').value != "Open this select menu") {
+        data = {
+            "BatchID": document.getElementById('BatchDetail').value.split(',')[0],
+            "Semester": document.getElementById('BatchDetail').value.split(',')[1],
+            'Year': document.getElementById('year').value
+        }
+        $.ajax({
+            type: "POST",
+            url: "/getCoursesforBS",
+            dataType: "json",
+            success: function (msg) {
+                for (var x = 0; x < msg.length; x++) {
+                    if (mySet1.has(msg[x].CourseID) == false) {
+                        var optiondiv = document.createElement('option');
+                        optiondiv.value = msg[x].CourseID;
+                        optiondiv.textContent = msg[x].CourseID;
+                        parent.appendChild(optiondiv);
+                        mySet1.add(msg[x].CourseID);
+                    }
                 }
-            }
-        },
-        data: data
-    });
+            },
+            data: data
+        });
+    }
 }
-document.getElementById('CourseID').onchange = function(){
+document.getElementById('CourseID').onchange = function () {
     var semester = "1";
-    if(parseInt(document.getElementById('BatchDetail').value.split(',')[1])%2==0)
-    {
+    if (parseInt(document.getElementById('BatchDetail').value.split(',')[1]) % 2 == 0) {
         semester = "2";
     }
     var data = {
-        'CourseID':document.getElementById('CourseID').value,
-        'Year':document.getElementById('year').value,
-        'Semester':semester
+        'CourseID': document.getElementById('CourseID').value,
+        'Year': document.getElementById('year').value,
+        'Semester': semester
     }
     var parent = document.getElementById('Notes');
     parent.innerHTML = "";
-    $.ajax({
-        type: "POST",
-        url: "/getStudyMaterial",
-        dataType: "json",
-        success: function (msg) {
-            if(msg.length > 0){
-                var heading = document.createElement('h5');
-                heading.setAttribute('class','card-title');
-                heading.textContent="Study Material for "+document.getElementById('CourseID').value;
-                parent.appendChild(heading);
-                for(var x=0;x<msg.length;x++){
-                    var div = document.createElement('div');
-                    div.setAttribute('class','row mb-3');
-                    var a = document.createElement('a');
-                    a.setAttribute('class','link-primary');
-                    if(msg[x].type=="link"){
-                        a.href = msg[x].link;
+    if (data['CourseID'] != "Open this select menu") {
+        $.ajax({
+            type: "POST",
+            url: "/getStudyMaterial",
+            dataType: "json",
+            success: function (msg) {
+                if (msg.length > 0) {
+                    var heading = document.createElement('h5');
+                    heading.setAttribute('class', 'card-title');
+                    heading.textContent = "Study Material for " + document.getElementById('CourseID').value;
+                    parent.appendChild(heading);
+                    for (var x = 0; x < msg.length; x++) {
+                        var div = document.createElement('div');
+                        div.setAttribute('class', 'row mb-3');
+                        var a = document.createElement('a');
+                        a.setAttribute('class', 'link-primary');
+                        if (msg[x].type == "link") {
+                            a.href = msg[x].link;
+                        }
+                        else {
+                            a.href = "/downloadfile/" + msg[x].filename;
+                        }
+                        a.textContent = msg[x].description;
+                        div.appendChild(a);
+                        parent.appendChild(div);
                     }
-                    else{
-                        a.href = "/downloadfile/"+msg[x].filename;
-                    }
-                    a.textContent = msg[x].description;
-                    div.appendChild(a);
-                    parent.appendChild(div);
                 }
-            }
-            else{
-                var heading = document.createElement('h5');
-                heading.setAttribute('class','card-title');
-                heading.textContent="No Study Material YeT Available for "+document.getElementById('CourseID').value;
-                parent.appendChild(heading);
-            }
-        },
-        data:data
-    });     
+                else {
+                    var heading = document.createElement('h5');
+                    heading.setAttribute('class', 'card-title');
+                    heading.textContent = "No Study Material YeT Available for " + document.getElementById('CourseID').value;
+                    parent.appendChild(heading);
+                }
+            },
+            data: data
+        });
+    }
 }

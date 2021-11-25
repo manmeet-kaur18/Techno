@@ -1,16 +1,16 @@
 //Actual Implementation
-var dict1={"1":"Monday","2":"Tuesday","3":"Wednesday","4":"Thursday","5":"Friday","6":"Saturday","7":"Sunday"};
+var dict1 = { "1": "Monday", "2": "Tuesday", "3": "Wednesday", "4": "Thursday", "5": "Friday", "6": "Saturday", "7": "Sunday" };
 const d = new Date();
 var hour = d.getHours();
 var day = dict1[d.getDay()];
-var month = d.getMonth()+1;
+var month = d.getMonth() + 1;
 var sem = "1";
-if(month > 6){
+if (month > 6) {
     sem = "2";
 }
 var todaydate = d.getDate();
 var year = d.getFullYear();
-var date = todaydate+'-'+month+'-'+year;
+var date = todaydate + '-' + month + '-' + year;
 
 //For Testing
 // var hour = 8;
@@ -207,38 +207,40 @@ document.getElementById('Sem').onchange = function () {
         "Semester": stdSemester,
         "BatchID": stdBatch
     }
-    for(var x in dict1){
-        for(z in dict2){
-            var div1 = document.getElementById(dict1[x].toString()+dict2[z].toString());
+    for (var x in dict1) {
+        for (z in dict2) {
+            var div1 = document.getElementById(dict1[x].toString() + dict2[z].toString());
             div1.innerHTML = "";
         }
     }
-    $.ajax({
-        type: "POST",
-        url: "/getStudentTimeTable",
-        dataType: "json",
-        success: function (msg) {
-            for (var x = 0; x < msg.length; x++) {
-                var span = document.createElement('span');
-                span.setAttribute('class', 'bg-yellow padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16  xs-font-size13');
-                span.textContent = msg[x].CourseID;
-                var div1 = document.createElement('div');
-                div1.setAttribute('class', 'margin-10px-top font-size14');
-                div1.textContent = 'Faculty ID : ' + msg[x].FacultyID;
-                var div2 = document.createElement('div');
-                div2.textContent = msg[x].FacultyInfo.FacultyName;
-                var div3 = document.createElement('div');
-                div3.textContent = msg[x].FacultyInfo.phone;
+    if (data['Year'] != "Open this select menu" && data['TeacherSem'] != "Open this select menu") {
+        $.ajax({
+            type: "POST",
+            url: "/getStudentTimeTable",
+            dataType: "json",
+            success: function (msg) {
+                for (var x = 0; x < msg.length; x++) {
+                    var span = document.createElement('span');
+                    span.setAttribute('class', 'bg-yellow padding-5px-tb padding-15px-lr border-radius-5 margin-10px-bottom text-white font-size16  xs-font-size13');
+                    span.textContent = msg[x].CourseID;
+                    var div1 = document.createElement('div');
+                    div1.setAttribute('class', 'margin-10px-top font-size14');
+                    div1.textContent = 'Faculty ID : ' + msg[x].FacultyID;
+                    var div2 = document.createElement('div');
+                    div2.textContent = msg[x].FacultyInfo.FacultyName;
+                    var div3 = document.createElement('div');
+                    div3.textContent = msg[x].FacultyInfo.phone;
 
-                var parentid = dict1[msg[x].TimeSlot].toString() + dict2[msg[x].Day].toString();
-                var parentdiv = document.getElementById(parentid);
-                parentdiv.innerHTML = "";
-                parentdiv.appendChild(span);
-                parentdiv.appendChild(div1);
-                parentdiv.appendChild(div2);
-                parentdiv.appendChild(div3);
-            }
-        },
-        data: data
-    });
+                    var parentid = dict1[msg[x].TimeSlot].toString() + dict2[msg[x].Day].toString();
+                    var parentdiv = document.getElementById(parentid);
+                    parentdiv.innerHTML = "";
+                    parentdiv.appendChild(span);
+                    parentdiv.appendChild(div1);
+                    parentdiv.appendChild(div2);
+                    parentdiv.appendChild(div3);
+                }
+            },
+            data: data
+        });
+    }
 }

@@ -1,8 +1,8 @@
 $(document).ready(function () {
     var parentdiv = document.getElementById('BatchDetail');
     var optiondiv4 = document.createElement('option');
-    optiondiv4.value = "Open this Select Menu";
-    optiondiv4.textContent = "Open this Select Menu";
+    optiondiv4.value = "Open this select menu";
+    optiondiv4.textContent = "Open this select menu";
     parentdiv.appendChild(optiondiv4);
 
     $.ajax({
@@ -24,7 +24,7 @@ $(document).ready(function () {
 
 document.getElementById('BatchDetail').onchange=function(){
     
-    if(document.getElementById('BatchDetail').value != "Open this Select Menu"){
+    if(document.getElementById('BatchDetail').value != "Open this select menu"){
         var parent = document.getElementById('attendance');
         parent.innerHTML="";
         data = {

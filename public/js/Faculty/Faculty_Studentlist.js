@@ -1,3 +1,19 @@
+document.getElementById('year').onchange = function(){
+    var parent1 = document.getElementById('TeacherSem');
+    parent1.value = "Open this select menu";
+    
+    var parentdiv = document.getElementById('BatchDetail');
+    parentdiv.innerHTML="";
+    var optiondiv4 = document.createElement('option');
+    optiondiv4.value = "Open this select menu";
+    optiondiv4.textContent = "Open this select menu";
+    parentdiv.appendChild(optiondiv4);
+
+    var parent1 = document.getElementById('StudentDetail');
+    parent1.innerHTML = "";
+
+
+}
 document.getElementById('TeacherSem').onchange= function(){
     var data={
         'Year':document.getElementById('year').value,
@@ -7,9 +23,13 @@ document.getElementById('TeacherSem').onchange= function(){
     parentdiv.innerHTML="";
 
     var optiondiv4 = document.createElement('option');
-    optiondiv4.value = "Open this Select Menu";
-    optiondiv4.textContent = "Open this Select Menu";
+    optiondiv4.value = "Open this select menu";
+    optiondiv4.textContent = "Open this select menu";
     parentdiv.appendChild(optiondiv4);
+    
+    var parent1 = document.getElementById('StudentDetail');
+    parent1.innerHTML = "";
+
     mySet1=new Set();
     
     $.ajax({
