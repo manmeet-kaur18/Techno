@@ -284,13 +284,23 @@ button.addEventListener('click', function (e) {
     };
     var totalmarks = 0;
     for (var x = 0; x < totalQuestion; x++) {
-        var t1 = {
-            'questionid': (x + 1).toString(),
-            'Ans': document.getElementById('answer' + (x + 1).toString()).value,
-            'marks': parseInt(document.getElementById('MarksObtained' + (x + 1).toString()).textContent.split(':')[1]).toString()
-        };
-        totalmarks = totalmarks + parseInt(document.getElementById('MarksObtained1').textContent.split(':')[1]);
-        data.StudentAnswers.push(t1);
+        var quesResp={};
+        if(document.getElementById('MarksObtained'+(x+1).toString()) != null || document.getElementById('MarksObtained'+(x+1).toString()) != undefined){
+            quesResp = {
+                'questionid': (x + 1).toString(),
+                'Ans': document.getElementById('answer' + (x + 1).toString()).value,
+                'marks': parseInt(document.getElementById('MarksObtained' + (x + 1).toString()).textContent.split(':')[1]).toString()
+            };
+            totalmarks = totalmarks + parseInt(document.getElementById('MarksObtained'+(x+1).toString()).textContent.split(':')[1]);
+        }
+        else{
+            quesResp = {
+                'questionid':(x+1).toString(),
+                'Ans': document.getElementById('answer' + (x + 1).toString()).value,
+                'marks':"0"
+            }
+        }
+        data.StudentAnswers.push(quesResp);
     }
     data['totalmarks'] = totalmarks.toString();
     $.ajax({
