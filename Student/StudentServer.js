@@ -375,7 +375,7 @@ module.exports = function () {
 
 
     app.post('/getStudentAnswers', (req, res) => {
-        db.collection('StudentOnlineAnwers').find({ examID: req.body.examid }).toArray((err, result1) => {
+        db.collection('StudentOnlineAnwers').find({ examID: req.body.examid, RollNo: StudentRollNoglobal }).toArray((err, result1) => {
             if (err) {
                 return err;
             }

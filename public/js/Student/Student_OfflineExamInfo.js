@@ -231,9 +231,7 @@ document.getElementById('year').onchange = function () {
     parent.innerHTML = "";
     parent.appendChild(optiondiv);
 
-    
     var parent1 = document.getElementById('CourseID');
-
     parent1.innerHTML = "";
     var option1 = document.createElement('option');
     option1.textContent = "Open this select menu";
@@ -282,8 +280,6 @@ document.getElementById('BatchDetail').onchange = function () {
     optiondiv.value = "Open this select menu";
     parent.appendChild(optiondiv);
 
-
-    
     var parent1 = document.getElementById('Examid');
     parent1.innerHTML = "";
     var option = document.createElement('option');
@@ -365,6 +361,14 @@ document.getElementById('Examid').onchange = function () {
         filename = dict1[document.getElementById('Examid').value].filename;
         marksOtained = dict1[document.getElementById('Examid').value].MarksObtained;
         totalMarks = dict1[document.getElementById('Examid').value].TotalMarks; 
+        ViewExam(document.getElementById('Examid').value, filename, "done",marksOtained,totalMarks);
     }
-    ViewExam(document.getElementById('Examid').value, filename, "done",marksOtained,totalMarks);
+    else{
+        var parent = document.getElementById('ReviewPast');
+        parent.innerHTML = "";
+        var heading = document.createElement('h5');
+        heading.setAttribute('class', 'card-title');
+        heading.textContent = "You were Absent for this Exam";
+        parent.appendChild(heading);
+    }
 }

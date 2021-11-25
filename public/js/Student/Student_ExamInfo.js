@@ -381,6 +381,11 @@ document.getElementById('Examid').onchange = function () {
 
                     }
                 }
+                else{
+                    var heading1 = document.createElement('h5');
+                    heading1.textContent = "Marks Obtained in the Test - 0 "+ "You have not attempted this test";
+                    parent.appendChild(heading1);
+                }
             },
             data: data
         });
