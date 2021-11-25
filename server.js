@@ -5,6 +5,7 @@ require('./Admin/adminServer')();
 require('./Student/StudentServer')();
 require('./Faculty/FacultyServer')();
 
+app.get('/healthcheck', (_req, res)=>{res.status(200).send("Server Running")})
 
 app.get('/uploadAnswers', (req, res) => {
   res.sendFile(__dirname + "/index1.html");
@@ -135,3 +136,5 @@ app.post('/getCoursesTaught', (req, res) => {
     }
   });
 });
+
+module.exports = app;

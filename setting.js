@@ -71,6 +71,7 @@ module.exports = {
 
             app.listen((PORT), () => {
                 console.log('listening on deployed server');
+                app.emit( "app_started" );
             });
 
         });

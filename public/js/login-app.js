@@ -10,13 +10,6 @@ sign_in_btn.addEventListener("click", () => {
   container.classList.remove("sign-up-mode");
 });
 
-// const button1 = document.getElementById('login');
-// button1.addEventListener('click', function (e) {
-//   location.href = '/home';
-
-// });
-
-
 const button = document.getElementById('login');
 button.addEventListener('click', function (e) {
   console.log('button was clicked');
