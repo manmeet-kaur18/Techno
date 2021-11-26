@@ -5,8 +5,13 @@ var sem = "1";
 if (month > 6) {
     sem = "2";
 }
-
+if(month < 10){
+    month = '0'+month;
+}
 var date = d.getDate();
+if(date < 10){
+    date = '0'+date;
+}
 var year = d.getFullYear();
 var todaydate = date + '-' + month + '-' + year;
 var stdBatch = "";

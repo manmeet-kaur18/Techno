@@ -8,7 +8,14 @@
     if(month > 6){
         sem = "2";
     }
+    if(month < 10)
+    {
+        month = '0'+month;
+    }
     var todaydate = d.getDate();
+    if(todaydate < 10){
+        todaydate = '0'+todaydate;
+    }
     var year = d.getFullYear();
     var date = todaydate+'-'+month+'-'+year;
 

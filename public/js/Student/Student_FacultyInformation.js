@@ -114,15 +114,17 @@ document.getElementById('BatchDetail').onchange = function () {
     });
 }
 
-//to do - Testing
 function sendPreference(CourseID, Online) {
-    //to calculate weekno from date Testing - task 
-    //var weekno = "46";
     var month = d.getMonth() + 1;
+    if(month < 10){
+        month = '0'+month;
+    }
     var date = d.getDate();
+    if(date < 10){
+        date = '0'+date;
+    }
     var year = d.getFullYear();
     var todayDate = date + '-' + month + '-' + year;
-    // todayDate = "14-11-2021";
 
     var data = {
         'Year': document.getElementById('BatchDetail').value.split(',')[1],
@@ -152,8 +154,14 @@ function sendPreference(CourseID, Online) {
 function AskDoubt(FacultyID, CourseID) {
     var d = new Date();
     var date = d.getDate();
+    if(date < 10){
+        date = '0'+date;
+    }
     var month = d.getMonth();
     month = month + 1;
+    if(month < 10){
+        month = '0'+month;
+    }
     var year = d.getFullYear();
     var todaydate = date + "-" + month + "-" + year;
     var data = {

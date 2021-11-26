@@ -197,7 +197,8 @@ module.exports = function () {
         transporter.sendMail(HelperOptions, (error, info) => {
           if (error) {
             console.log(error);
-          } else {
+          } 
+          else {
             res.send([{
               message: 'Doubt has been Resolved',
               status: true
@@ -589,7 +590,6 @@ module.exports = function () {
     if (month > 6) {
       sem = "2";
     }
-    //check it
     var data = {
       filename: req.file.filename,
       CourseID: req.body.CourseID,
@@ -609,8 +609,4 @@ module.exports = function () {
       }]);
     });
   });
-
-
-
-
 }
