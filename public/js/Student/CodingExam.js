@@ -10,8 +10,8 @@ $(document).ready(function () {
         success: function (msg) {
             if (msg.length > 0) {
                 var month = msg[0].Date.split('-')[1]
-                var date = msg[0].Date.split('-')[0]
-                var year = msg[0].Date.split('-')[2]
+                var date = msg[0].Date.split('-')[2]
+                var year = msg[0].Date.split('-')[0]
                 totalQuestion = msg[0].Questions.length;
                 countDownDate = new Date(month + "-" + date + "-" + year + " " + msg[0].EndTime).getTime();
                 var x = setInterval(function () {
