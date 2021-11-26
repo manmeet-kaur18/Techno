@@ -151,24 +151,6 @@ document.getElementById('Number').oninput = function () {
         div7.appendChild(div9);
         parent.appendChild(div7);
 
-        // // Explanation for the Sample output
-        // var div16 = document.createElement('div');
-        // div16.setAttribute('class','row mb-3');
-        // var div17 = document.createElement('label');
-        // div17.setAttribute('class','col-sm-2 col-form-label');
-        // div17.textContent = "Constraints: "+x;
-        // var div18 = document.createElement('div');
-        // div18.setAttribute('class','col-sm-10');
-        // var input5 = document.createElement('input');
-        // input5.setAttribute("type","text");
-        // input5.setAttribute("class","form-control");
-        // input5.id = "explanation"+x;
-
-        // div18.appendChild(input5);
-        // div16.appendChild(div17);
-        // div16.appendChild(div18);
-        // parent.appendChild(div16);
-
         // Inputs 
         var div10 = document.createElement('div');
         div10.setAttribute('class', 'row mb-3');

@@ -13,7 +13,7 @@ if(date < 10){
     date = '0'+date;
 }
 var year = d.getFullYear();
-var todaydate = date + '-' + month + '-' + year;
+var todaydate = year + '-' + month + '-' + date;
 var stdBatch = "";
 var stdSemester = "";
 var h = d.getHours();
@@ -27,6 +27,7 @@ else {
 }
 var dict1 = {};
 
+var checkRecheckexams = new Set();
 $(document).ready(function () {
     var parent1 = document.getElementById('CheckedSheets');
     var parent2 = document.getElementById('RecheckSheets');
@@ -98,6 +99,7 @@ $(document).ready(function () {
                         li.appendChild(div1);
                         parent2.appendChild(li);
                     }
+                    checkRecheckexams.add(msg[x].examID);
                 }
                 else if (msg[x].status == "done") {
                     dict1[msg[x].examID] = {'filename':msg[x].filename,'MarksObtained':msg[x].MarksObtained,'TotalMarks':msg[x].ExamInfo.TotalMarks};
@@ -348,7 +350,7 @@ document.getElementById('CourseID').onchange = function () {
             dataType: "json",
             success: function (msg) {
                 for (var x = 0; x < msg.length; x++) {
-                    if (msg[x].Type == "Written") {
+                    if (msg[x].Type == "Written" && checkRecheckexams.has(msg[x]._id)==false) {
                         var optiondiv = document.createElement('option');
                         optiondiv.value = msg[x]._id;
                         optiondiv.textContent = msg[x].examName;

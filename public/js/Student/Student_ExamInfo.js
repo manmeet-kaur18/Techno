@@ -13,7 +13,7 @@ if(date < 10){
     date = '0'+date;
 }
 var year = d.getFullYear();
-var todaydate = date + '-' + month + '-' + year;
+var todaydate = year + '-' + month + '-' + date;
 var stdBatch = "";
 var stdSemester = "";
 var h = d.getHours();
